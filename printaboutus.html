@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Great Print Shop</title>
+<style>
+  :root{
+    color-scheme:light;
+    --brand:#0f766e;
+    --brand-light:#14b8a6;
+    --accent:#f97316;
+    --ink:#0f172a;
+    --muted:#64748b;
+    --bg:#f4f8f7;
+    --surface:#ffffff;
+    --surface-soft:#ecf7f4;
+    --border:#dce8e5;
+    --header:rgba(255,255,255,.86);
+    --hero:linear-gradient(135deg,#115e59 0%,#0f766e 48%,#14b8a6 100%);
+    --contact:#102a2a;
+    --radius:20px;
+    --shadow:0 12px 32px rgba(15,23,42,.07);
+    --shadow-hover:0 20px 44px rgba(15,23,42,.12);
+    --focus:0 0 0 4px rgba(20,184,166,.22);
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      color-scheme:dark;
+      --brand:#5eead4;
+      --brand-light:#99f6e4;
+      --accent:#fdba74;
+      --ink:#e6eef7;
+      --muted:#a4b3c5;
+      --bg:#0b1220;
+      --surface:#151f30;
+      --surface-soft:#12312e;
+      --border:#29384a;
+      --header:rgba(11,18,32,.88);
+      --hero:linear-gradient(135deg,#102d35 0%,#115e59 55%,#0f766e 100%);
+      --contact:#050b14;
+      --shadow:0 14px 34px rgba(0,0,0,.22);
+      --shadow-hover:0 22px 48px rgba(0,0,0,.34);
+      --focus:0 0 0 4px rgba(94,234,212,.2);
+    }
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.7;
+    font-size:16px;
+    font-family:system-ui,-apple-system,"Segoe UI","Helvetica Neue","Noto Sans",
+      "PingFang SC","Hiragino Sans GB","Microsoft YaHei","Hiragino Sans",
+      "Yu Gothic UI","Noto Sans Thai","Noto Sans Myanmar","Noto Sans Lao",sans-serif;
+    -webkit-text-size-adjust:100%;
+    transition:background-color .25s ease,color .25s ease;
+  }
+  html[lang="my"] body,
+  html[lang="lo"] body{line-height:2.05}
+  html[lang="th"] body{line-height:1.9}
+
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+
+  /* ---------- Topbar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:var(--header);
+    backdrop-filter:saturate(180%) blur(10px);
+    -webkit-backdrop-filter:saturate(180%) blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+  .topbar .wrap{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:16px;min-height:72px;
+  }
+  .brand{
+    display:flex;align-items:center;gap:9px;
+    font-weight:800;font-size:17px;color:var(--brand);
+    text-decoration:none;white-space:nowrap;
+  }
+  .brand-icon{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:38px;height:38px;border-radius:12px;
+    background:linear-gradient(135deg,var(--brand),var(--brand-light));
+    color:#fff;
+  }
+  .brand-icon svg{width:21px;height:21px}
+  .card .icon svg,.contact-lines svg{
+    width:22px;height:22px;fill:none;stroke:currentColor;
+    stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;
+  }
+  .contact-lines span{display:inline-flex;align-items:center;gap:9px}
+  .contact-lines svg{width:18px;height:18px;flex:0 0 auto}
+  .contact-lines a{color:inherit;text-decoration:none}
+  .contact-lines a:hover{text-decoration:underline;text-underline-offset:3px}
+  .contact-lines a:focus-visible{outline:2px solid #99f6e4;outline-offset:4px;border-radius:3px}
+  
+  select#lang{
+    font:inherit;font-size:15px;
+    padding:8px 12px;border-radius:12px;min-height:42px;
+    border:1px solid var(--border);background:var(--surface);color:var(--ink);
+    cursor:pointer;max-width:56vw;
+    box-shadow:0 2px 6px rgba(15,23,42,.04);
+  }
+  select#lang:focus-visible{outline:none;box-shadow:var(--focus)}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    position:relative;overflow:hidden;
+    background:var(--hero);
+    color:#fff;padding:78px 0 84px;
+  }
+  .hero::before,
+  .hero::after{
+    content:"";position:absolute;border-radius:50%;
+    background:rgba(255,255,255,.13);pointer-events:none;
+  }
+  .hero::before{width:320px;height:320px;top:-120px;right:-80px}
+  .hero::after{width:220px;height:220px;bottom:-110px;left:-60px;background:rgba(255,255,255,.09)}
+  .hero .wrap{position:relative;z-index:1}
+  .hero h1{
+    margin:0 0 14px;font-weight:800;letter-spacing:.4px;
+    font-size:clamp(28px,5vw,46px);line-height:1.25;
+    text-shadow:0 2px 18px rgba(0,0,0,.12);
+  }
+  .hero .lead{
+    margin:0;font-weight:500;opacity:.96;
+    font-size:clamp(15px,2.2vw,19px);
+  }
+
+  /* ---------- Features ---------- */
+  .features{padding:58px 0 12px}
+  .grid{
+    display:grid;gap:20px;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  }
+  .card{
+    background:var(--surface);border-radius:var(--radius);
+    padding:28px 26px;border:1px solid var(--border);
+    box-shadow:var(--shadow);
+    transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease,background .25s ease;
+  }
+  .card:hover{transform:translateY(-4px);box-shadow:var(--shadow-hover);border-color:var(--brand-light)}
+  .card .icon{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:48px;height:48px;border-radius:15px;
+    background:var(--surface-soft);font-size:23px;
+  }
+  .card h3{margin:16px 0 6px;font-size:18px;font-weight:800}
+  .card p{margin:0;color:var(--muted);font-size:15px}
+
+  /* ---------- Prices ---------- */
+  .prices{padding:52px 0 64px}
+  .prices h2{
+    margin:0 0 22px;font-size:clamp(22px,3.4vw,28px);
+    font-weight:800;letter-spacing:.3px;
+  }
+  .price-grid{
+    display:grid;gap:20px;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  }
+  .price-card{
+    background:var(--surface);border-radius:24px;
+    padding:34px 22px;text-align:center;
+    border:1px solid var(--border);
+    box-shadow:var(--shadow);
+    transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease,background .25s ease;
+  }
+  .price-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-hover);border-color:var(--brand-light)}
+  .price-card .name{
+    font-weight:800;font-size:16px;color:var(--muted);
+    letter-spacing:.5px;
+  }
+  .price-card .num{
+    display:flex;align-items:baseline;justify-content:center;
+    gap:7px;margin:8px 0 2px;flex-wrap:wrap;
+  }
+  .price-card .amount{
+    font-size:clamp(44px,8vw,58px);font-weight:800;
+    line-height:1.05;color:var(--brand);
+  }
+  .price-card.accent .amount{color:var(--accent)}
+  .price-card .cur{font-size:17px;font-weight:800}
+  .price-card .unit{font-size:14px;color:var(--muted)}
+  .note{
+    display:flex;align-items:center;justify-content:center;gap:9px;
+    max-width:660px;margin:24px auto 0;padding:13px 20px;
+    background:var(--surface-soft);border:1px dashed var(--brand-light);border-radius:15px;
+    color:var(--brand);font-weight:700;font-size:15px;text-align:center;
+  }
+  .note .tick{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:22px;height:22px;border-radius:50%;
+    background:#0f766e;color:#fff;font-size:13px;flex:0 0 auto;
+  }
+
+  /* ---------- Contact ---------- */
+  .contact{padding:0 0 64px}
+  .contact-box{
+    background:var(--contact);color:#e2e8f0;
+    border-radius:26px;padding:40px 28px;text-align:center;
+    box-shadow:0 22px 50px rgba(15,23,42,.22);
+  }
+  .contact-box h2{margin:0 0 10px;font-size:clamp(21px,3.2vw,26px);color:#fff;font-weight:800}
+  .contact-box p{margin:0 0 18px;color:#cbd5e1;font-size:15px}
+  .contact-lines{
+    display:flex;gap:14px;justify-content:center;flex-wrap:wrap;
+    font-weight:700;font-size:15px;
+  }
+  .contact-lines span{
+    background:rgba(255,255,255,.1);
+    padding:9px 16px;border-radius:999px;white-space:nowrap;
+  }
+
+  /* ---------- Footer ---------- */
+  footer{
+    padding:24px 0;text-align:center;
+    color:var(--muted);font-size:13px;
+    border-top:1px solid var(--border);
+  }
+  footer p{margin:0}
+
+  @media (max-width:480px){
+    .wrap{padding:0 18px}
+    .topbar .wrap{min-height:64px;gap:8px}
+    .brand{font-size:15px;gap:7px}
+    .brand-icon{width:34px;height:34px}
+    select#lang{min-height:40px;padding:7px 9px;font-size:14px}
+    .hero{padding:58px 0 64px}
+    .features{padding-top:38px}
+    .grid,.price-grid{gap:14px}
+    .contact-box{padding:32px 20px;border-radius:20px}
+    .price-card{padding:24px 16px}
+    .contact-lines span{white-space:normal;overflow-wrap:anywhere}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <span class="brand">
+      <span class="brand-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 8V3h10v5M7 17H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+          <path d="M7 14h10v7H7zM17 11h.01"/>
+        </svg>
+      </span>
+      <span>𝑮𝒓𝒆𝒂𝒕 𝑷𝒓𝒊𝒏𝒕 𝑺𝒉𝒐𝒑</span>
+    </span>
+    <select id="lang" aria-label="Language"></select>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <h1 data-i18n="heroTitle"></h1>
+      <p class="lead" data-i18n="heroSub"></p>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="wrap grid">
+      <article class="card">
+        <div class="icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z"/><path d="m19 15 .9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9L19 15Z"/></svg>
+        </div>
+        <h3 data-i18n="f1t"></h3>
+        <p data-i18n="f1d"></p>
+      </article>
+      <article class="card">
+        <div class="icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15 8.5c-.7-.7-1.7-1-3-1-1.7 0-2.8.8-2.8 2s1 1.8 2.8 2.2 2.8 1 2.8 2.2-1.1 2.1-2.8 2.1c-1.3 0-2.4-.4-3.2-1.2M12 5.5v13"/></svg>
+        </div>
+        <h3 data-i18n="f2t"></h3>
+        <p data-i18n="f2d"></p>
+      </article>
+      <article class="card">
+        <div class="icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M3 7h11v10H3zM14 11h4l3 3v3h-7"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/><path d="M14 7h3l2 4"/></svg>
+        </div>
+        <h3 data-i18n="f3t"></h3>
+        <p data-i18n="f3d"></p>
+      </article>
+    </div>
+  </section>
+
+  <section class="prices">
+    <div class="wrap">
+      <h2 data-i18n="priceTitle"></h2>
+      <div class="price-grid">
+        <div class="price-card">
+          <div class="name" data-i18n="bwName"></div>
+          <div class="num">
+            <span class="amount" data-i18n="bwPrice"></span>
+            <span class="cur" data-i18n="currency"></span>
+          </div>
+          <div class="unit" data-i18n="unit"></div>
+        </div>
+        <div class="price-card accent">
+          <div class="name" data-i18n="coName"></div>
+          <div class="num">
+            <span class="amount" data-i18n="coPrice"></span>
+            <span class="cur" data-i18n="currency"></span>
+          </div>
+          <div class="unit" data-i18n="unit"></div>
+        </div>
+      </div>
+      <p class="note">
+        <span class="tick">✓</span>
+        <span data-i18n="note"></span>
+      </p>
+    </div>
+  </section>
+
+  <section class="contact">
+    <div class="wrap">
+      <div class="contact-box">
+        <h2 data-i18n="contactTitle"></h2>
+        <p data-i18n="contactText"></p>
+        <p class="contact-lines">
+          <span>
+            <svg aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg>
+            <a href="mailto:greatprintshop@outlook.com">E-mail: greatprintshop@outlook.com</a>
+          </span>
+          <span>
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20 11.5a7.5 7.5 0 0 1-8 7.5 8.5 8.5 0 0 1-3.4-.7L4 20l1.3-3.5A7.2 7.2 0 0 1 4 12a7.5 7.5 0 0 1 8-7.5 7.5 7.5 0 0 1 8 7Z"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></svg>
+            <a href="tel:00660616648336">LINE/WhatsApp: +66 061-664-8336</a>
+          </span>
+        </p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p data-i18n="footer"></p>
+    <p>Notice: We can only accept orders within the Shinawatra University area.</p>
+    <p>หมายเหตุ: รับออเดอร์ได้เฉพาะภายในบริเวณมหาวิทยาลัยชินวัตรเท่านั้น</p>
+    <p>注意：我们只接受在西那瓦大学本部校区内的订单。</p>
+    <br>
+    <p>Shinawatra University, 99 Moo 10, Bang Toei, Samkhok, Pathum Thani, Thailand</p>
+    <p>มหาวิทยาลัยชินวัตร 99 หมู่ 10 ตำบลบางเตย อำเภอสามโคก จังหวัดปทุมธานี ประเทศไทย</p>
+    <p>泰国巴吞他尼府三柯县邦托伊镇第10村99号，西那瓦大学</p>
+  </div>
+</footer>
+
+<script>
+/* =========================================================
+   fr < ja < lo < ms < my < th < zh-Hans < zh-Hant-HK < zh-Hant-TW
+   ========================================================= */
+const I18N = {
+
+  /* ---------- Français ---------- */
+  "fr": {
+    brand: "Service d'impression",
+    heroTitle: "Service d'impression de haute qualité",
+    heroSub: "Qualité excellente · Prix abordables · Livraison disponible",
+    f1t: "Qualité excellente",
+    f1d: "Une impression nette et précise : chaque détail est fidèlement rendu, en noir et blanc comme en couleur.",
+    f2t: "Prix abordables",
+    f2d: "A4 noir et blanc à 1 baht la page, couleur à 5 bahts la page. Un excellent rapport qualité-prix.",
+    f3t: "Livraison disponible",
+    f3d: "Livraison à domicile pour vous faire gagner du temps et de l'énergie.",
+    priceTitle: "Tarifs",
+    bwName: "A4 Noir & Blanc",
+    bwPrice: "1",
+    currency: "baht",
+    unit: "/ page",
+    coName: "A4 Couleur",
+    coPrice: "5",
+    note: "Impression recto / recto-verso au même prix",
+    contactTitle: "Contactez-nous",
+    contactText: "N'hésitez pas à nous contacter pour toute question ou commande.",
+    footer: "© 2026 Service d'impression de haute qualité · Tarifs susceptibles de changer"
+  },
+
+  /* ---------- 日本語 ---------- */
+  "ja": {
+    brand: "プリントサービス",
+    heroTitle: "高品質プリントサービス",
+    heroSub: "高品質 · 低価格 · 配達対応",
+    f1t: "高品質",
+    f1d: "くっきり鮮やかな仕上がり。細部まで美しく印刷します。モノクロもカラーも高精細です。",
+    f2t: "低価格",
+    f2d: "A4モノクロは1枚1バーツ、カラーは1枚5バーツ。とてもお得です。",
+    f3t: "配達対応",
+    f3d: "ご自宅までお届けします。時間も手間も節約できます。",
+    priceTitle: "料金表",
+    bwName: "A4 モノクロ",
+    bwPrice: "1",
+    currency: "バーツ",
+    unit: "/ 枚",
+    coName: "A4 カラー",
+    coPrice: "5",
+    note: "片面・両面とも同じ料金",
+    contactTitle: "お問い合わせ",
+    contactText: "ご注文・ご相談はお気軽にどうぞ。",
+    footer: "© 2026 高品質プリントサービス · 料金は予告なく変更する場合があります"
+  },
+
+  /* ---------- ລາວ ---------- */
+  "lo": {
+    brand: "ບໍລິການພິມ",
+    heroTitle: "ບໍລິການພິມຄຸນນະພາບສູງ",
+    heroSub: "ຄຸນນະພາບດີ · ລາຄາຖືກ · ມີບໍລິການສົ່ງ",
+    f1t: "ຄຸນນະພາບດີເລີດ",
+    f1d: "ພິມຄົມຊັດ ລາຍລະອຽດຄົບຖ້ວນ ທັງຂາວດຳ ແລະ ສີ.",
+    f2t: "ລາຄາປະຢັດ",
+    f2d: "A4 ຂາວດຳ ໜ້າລະ 1 ບາດ, ສີ ໜ້າລະ 5 ບາດ ຄຸ້ມຄ່າທີ່ສຸດ.",
+    f3t: "ມີບໍລິການສົ່ງ",
+    f3d: "ສົ່ງເຖິງບ້ານ ປະຢັດເວລາ ແລະ ແຮງ.",
+    priceTitle: "ອັດຕາຄ່າບໍລິການ",
+    bwName: "A4 ຂາວດຳ",
+    bwPrice: "1",
+    currency: "ບາດ",
+    unit: "/ ໜ້າ",
+    coName: "A4 ສີ",
+    coPrice: "5",
+    note: "ພິມໜ້າດຽວ / ສອງໜ້າ ລາຄາດຽວກັນ",
+    contactTitle: "ຕິດຕໍ່ເຮົາ",
+    contactText: "ສອບຖາມ ແລະ ສັ່ງພິມໄດ້ເລີຍ ຍິນດີໃຫ້ບໍລິການ.",
+    footer: "© 2026 ບໍລິການພິມຄຸນນະພາບສູງ · ລາຄາອາດມີການປ່ຽນແປງ"
+  },
+
+  /* ---------- Bahasa Melayu ---------- */
+  "ms": {
+    brand: "Perkhidmatan Cetak",
+    heroTitle: "Perkhidmatan Cetakan Berkualiti Tinggi",
+    heroSub: "Kualiti terbaik · Harga berpatutan · Penghantaran tersedia",
+    f1t: "Kualiti Terbaik",
+    f1d: "Cetakan tajam dan jelas, setiap butiran terpapar dengan sempurna.",
+    f2t: "Harga Berpatutan",
+    f2d: "A4 hitam putih 1 baht/halaman, berwarna 5 baht/halaman. Sangat berbaloi.",
+    f3t: "Penghantaran Tersedia",
+    f3d: "Dihantar terus ke pintu rumah anda, menjimatkan masa dan tenaga.",
+    priceTitle: "Senarai Harga",
+    bwName: "A4 Hitam Putih",
+    bwPrice: "1",
+    currency: "baht",
+    unit: "/ halaman",
+    coName: "A4 Berwarna",
+    coPrice: "5",
+    note: "Cetakan sebelah / dua belah pada harga yang sama",
+    contactTitle: "Hubungi Kami",
+    contactText: "Hubungi kami untuk sebarang pertanyaan atau pesanan.",
+    footer: "© 2026 Perkhidmatan Cetakan Berkualiti Tinggi · Harga tertakluk kepada perubahan"
+  },
+
+  /* ---------- မြန်မာ ---------- */
+  "my": {
+    brand: "ပရင့်ဝန်ဆောင်မှု",
+    heroTitle: "အရည်အသွေးမြင့် ပရင့်ထုတ်ဝန်ဆောင်မှု",
+    heroSub: "အရည်အသွေးကောင်း · ဈေးနှုန်းချိုသာ · ပို့ဆောင်ပေးသည်",
+    f1t: "အရည်အသွေးကောင်း",
+    f1d: "ပရင့်ထုတ်ချက် ကြည်လင်ပြတ်သားပြီး အသေးစိတ်အားလုံး ပေါ်လွင်စွာ ရရှိပါသည်။",
+    f2t: "ဈေးနှုန်းချိုသာ",
+    f2d: "A4 အဖြူအမည်း တစ်မျက်နှာ ၁ ဘတ်၊ အရောင် တစ်မျက်နှာ ၅ ဘတ်သာ။",
+    f3t: "ပို့ဆောင်ပေးသည်",
+    f3d: "အိမ်အထိ ပို့ဆောင်ပေးပါသည်။ အချိန်နှင့် အားစိုက်မှု သက်သာစေသည်။",
+    priceTitle: "ဈေးနှုန်းစာရင်း",
+    bwName: "A4 အဖြူအမည်း",
+    bwPrice: "၁",
+    currency: "ဘတ်",
+    unit: "/ တစ်မျက်နှာ",
+    coName: "A4 အရောင်",
+    coPrice: "၅",
+    note: "တစ်မျက်နှာ / နှစ်မျက်နှာ ဈေးနှုန်းတူ",
+    contactTitle: "ဆက်သွယ်ရန်",
+    contactText: "မှာယူရန် သို့မဟုတ် မေးမြန်းရန် ဆက်သွယ်နိုင်ပါသည်။",
+    footer: "© 2026 အရည်အသွေးမြင့် ပရင့်ဝန်ဆောင်မှု · ဈေးနှုန်း ပြောင်းလဲနိုင်ပါသည်"
+  },
+
+  /* ---------- ไทย ---------- */
+  "th": {
+    brand: "บริการพิมพ์",
+    heroTitle: "บริการพิมพ์คุณภาพสูง",
+    heroSub: "คุณภาพดี · ราคาถูก · พร้อมบริการจัดส่ง",
+    f1t: "คุณภาพดีเยี่ยม",
+    f1d: "พิมพ์คมชัด รายละเอียดครบถ้วน ทั้งขาวดำและสี",
+    f2t: "ราคาประหยัด",
+    f2d: "A4 ขาวดำ เพียงหน้าละ 1 บาท สีหน้า 5 บาท คุ้มค่าที่สุด",
+    f3t: "บริการจัดส่ง",
+    f3d: "ส่งถึงบ้าน ประหยัดเวลาและแรง เอกสารถึงมือคุณ",
+    priceTitle: "อัตราค่าบริการ",
+    bwName: "A4 ขาวดำ",
+    bwPrice: "1",
+    currency: "บาท",
+    unit: "/ หน้า",
+    coName: "A4 สี",
+    coPrice: "5",
+    note: "พิมพ์หน้าเดียว / สองหน้า ราคาเดียวกัน",
+    contactTitle: "ติดต่อเรา",
+    contactText: "สอบถามและสั่งพิมพ์ได้เลย ยินดีให้บริการ",
+    footer: "© 2026 บริการพิมพ์คุณภาพสูง · ราคาอาจมีการเปลี่ยนแปลง"
+  },
+
+  /* ---------- 简体中文 ---------- */
+  "zh-Hans": {
+    brand: "优质打印",
+    heroTitle: "优质打印服务",
+    heroSub: "打印质量优异 · 价格实惠 · 支持配送",
+    f1t: "品质优异",
+    f1d: "清晰锐利的打印效果，文件细节完整呈现，黑白彩色都出色。",
+    f2t: "价格实惠",
+    f2d: "A4 黑白每页仅 1 泰铢，彩色每页 5 泰铢，性价比高。",
+    f3t: "支持配送",
+    f3d: "可安排送货上门，省时又省力，文件直接送到手边。",
+    priceTitle: "价格一览",
+    bwName: "A4 黑白",
+    bwPrice: "1",
+    currency: "泰铢",
+    unit: "/ 页",
+    coName: "A4 彩色",
+    coPrice: "5",
+    note: "单面 / 双面打印同价",
+    contactTitle: "联系我们",
+    contactText: "欢迎咨询与下单，详情请与我们联系。",
+    footer: "© 2026 优质打印服务 · 价格如有调整，以店内公告为准"
+  },
+
+  /* ---------- 繁體中文（香港） ---------- */
+  "zh-Hant-HK": {
+    brand: "優質打印",
+    heroTitle: "優質打印服務",
+    heroSub: "打印質素優異 · 價格實惠 · 提供送貨",
+    f1t: "質素優異",
+    f1d: "打印清晰銳利，文件細節完整呈現，黑白彩色同樣出色。",
+    f2t: "價格實惠",
+    f2d: "A4 黑白每頁只需 1 泰銖，彩色每頁 5 泰銖，性價比高。",
+    f3t: "提供送貨",
+    f3d: "可安排送貨上門，省時省力，文件直接送到手邊。",
+    priceTitle: "價格一覽",
+    bwName: "A4 黑白",
+    bwPrice: "1",
+    currency: "泰銖",
+    unit: "/ 頁",
+    coName: "A4 彩色",
+    coPrice: "5",
+    note: "單面 / 雙面打印同價",
+    contactTitle: "聯絡我們",
+    contactText: "歡迎查詢及下單，詳情請與我們聯絡。",
+    footer: "© 2026 優質打印服務 · 價格如有調整，以店內公告為準"
+  },
+
+  /* ---------- 正體中文（台灣） ---------- */
+  "zh-Hant-TW": {
+    brand: "優質列印",
+    heroTitle: "優質列印服務",
+    heroSub: "列印品質優異 · 價格實惠 · 提供外送",
+    f1t: "品質優異",
+    f1d: "列印清晰銳利，文件細節完整呈現，黑白彩色都出色。",
+    f2t: "價格實惠",
+    f2d: "A4 黑白每頁只要 1 泰銖，彩色每頁 5 泰銖，CP 值超高。",
+    f3t: "提供外送",
+    f3d: "可安排專人送達，省時又方便，文件直接送到手上。",
+    priceTitle: "價格一覽",
+    bwName: "A4 黑白",
+    bwPrice: "1",
+    currency: "泰銖",
+    unit: "/ 頁",
+    coName: "A4 彩色",
+    coPrice: "5",
+    note: "單面 / 雙面列印同價",
+    contactTitle: "聯絡我們",
+    contactText: "歡迎詢問與下單，詳情請與我們聯絡。",
+    footer: "© 2026 優質列印服務 · 價格如有調整，以店內公告為準"
+  }
+};
+
+/* Language order (sorted alphabetically) */
+const LANG_ORDER = ["fr", "ja", "lo", "ms", "my", "th", "zh-Hans", "zh-Hant-HK", "zh-Hant-TW"];
+
+const NATIVE_NAMES = {
+  "fr": "Français",
+  "ja": "日本語",
+  "lo": "ລາວ",
+  "ms": "Bahasa Melayu",
+  "my": "မြန်မာ",
+  "th": "ไทย",
+  "zh-Hans": "简体中文",
+  "zh-Hant-HK": "繁體中文（香港）",
+  "zh-Hant-TW": "正體中文（台灣）"
+};
+
+const FALLBACK = "zh-Hans";
+const select = document.getElementById("lang");
+
+LANG_ORDER.forEach(function (code) {
+  const opt = document.createElement("option");
+  opt.value = code;
+  opt.textContent = NATIVE_NAMES[code];
+  select.appendChild(opt);
+});
+
+/* Apply a language */
+function applyLang(code) {
+  const dict = I18N[code] || I18N[FALLBACK];
+  document.documentElement.lang = code;
+  document.title = dict.heroTitle;
+
+  document.querySelectorAll("[data-i18n]").forEach(function (el) {
+    const key = el.getAttribute("data-i18n");
+    if (dict[key] !== undefined) el.textContent = dict[key];
+  });
+
+  select.value = code;
+  try { localStorage.setItem("printshop-lang", code); } catch (e) {}
+}
+
+/* Detect initial language: local storage → browser language → Simplified Chinese */
+function detectInitialLang() {
+  try {
+    const saved = localStorage.getItem("printshop-lang");
+    if (saved && I18N[saved]) return saved;
+  } catch (e) {}
+
+  const navs = navigator.languages && navigator.languages.length
+    ? navigator.languages
+    : [navigator.language || FALLBACK];
+
+  for (let i = 0; i < navs.length; i++) {
+    const raw = String(navs[i]);
+    const low = raw.toLowerCase();
+
+    if (I18N[raw]) return raw;
+
+    const exact = LANG_ORDER.find(function (c) { return c.toLowerCase() === low; });
+    if (exact) return exact;
+
+    const base = low.split("-")[0];
+    if (base === "zh") {
+      if (low.indexOf("hk") > -1) return "zh-Hant-HK";
+      if (low.indexOf("mo") > -1) return "zh-Hant-HK";
+      if (low.indexOf("tw") > -1) return "zh-Hant-TW";
+      if (low.indexOf("hant") > -1) return "zh-Hant-TW";
+      return "zh-Hans";
+    }
+    const byBase = LANG_ORDER.find(function (c) { return c.toLowerCase() === base; });
+    if (byBase) return byBase;
+  }
+  return FALLBACK;
+}
+
+select.addEventListener("change", function () {
+  applyLang(select.value);
+});
+
+applyLang(detectInitialLang());
+</script>
+</body>
+</html>
