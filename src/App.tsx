@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import {
+  ChevronDown,
   ChevronRight,
   CircleDollarSign,
   Clock3,
@@ -97,9 +98,19 @@ function App() {
   }[contactChannel]
 
   useEffect(() => {
+    const pageTitle = 'Great Print Shop | Campus Printing at Shinawatra University'
     document.documentElement.lang = language
-    document.title = `Great Print Shop · ${text.languageName}`
-    document.querySelector<HTMLMetaElement>('meta[name="description"]')?.setAttribute('content', text.metaDescription)
+    document.title = pageTitle
+    for (const selector of [
+      'meta[name="description"]',
+      'meta[property="og:description"]',
+      'meta[name="twitter:description"]',
+    ]) {
+      document.querySelector<HTMLMetaElement>(selector)?.setAttribute('content', text.metaDescription)
+    }
+    for (const selector of ['meta[property="og:title"]', 'meta[name="twitter:title"]']) {
+      document.querySelector<HTMLMetaElement>(selector)?.setAttribute('content', pageTitle)
+    }
     try {
       localStorage.setItem('great-print-shop-language', language)
     } catch {
@@ -130,6 +141,7 @@ function App() {
               }}>
                 {languages.map((code) => <option key={code} value={code}>{languageCodes[code]} · {content[code].languageName}</option>)}
               </select>
+              <ChevronDown className="language-picker-chevron" size={14} aria-hidden="true" />
             </div>
             <a className="header-order" href={contactHref} target={contactChannel === 'email' ? undefined : '_blank'} rel={contactChannel === 'email' ? undefined : 'noreferrer'}>
               <span>{text.orderNow}</span><ContactBrandIcon channel={contactChannel} size={17} />
