@@ -362,9 +362,32 @@
 
 <script>
 /* =========================================================
-   fr < ja < lo < ms < my < th < zh-Hans < zh-Hant-HK < zh-Hant-TW
+   en < fr < ja < lo < ms < my < th < zh-Hans < zh-Hant-HK < zh-Hant-TW
    ========================================================= */
 const I18N = {
+  /* ---------- English ---------- */
+"en": {
+  brand: "Print Service",
+  heroTitle: "High-Quality Printing Service",
+  heroSub: "Excellent quality · Affordable prices · Delivery available",
+  f1t: "Excellent Quality",
+  f1d: "Sharp, clear printing with every detail rendered accurately in both black-and-white and color.",
+  f2t: "Affordable Prices",
+  f2d: "A4 black & white at 1 baht per page, color at 5 bahts per page. Great value for money.",
+  f3t: "Delivery Available",
+  f3d: "We deliver to your home so you save time and effort.",
+  priceTitle: "Pricing",
+  bwName: "A4 Black & White",
+  bwPrice: "1",
+  currency: "baht",
+  unit: "/ page",
+  coName: "A4 Color",
+  coPrice: "5",
+  note: "Single-sided / double-sided printing at the same price",
+  contactTitle: "Contact Us",
+  contactText: "Feel free to contact us for any questions or orders.",
+  footer: "© 2026 High-Quality Printing Service · Prices are subject to change"
+},
 
   /* ---------- Français ---------- */
   "fr": {
@@ -583,10 +606,11 @@ const I18N = {
   }
 };
 
-/* Language order (sorted alphabetically) */
-const LANG_ORDER = ["fr", "ja", "lo", "ms", "my", "th", "zh-Hans", "zh-Hant-HK", "zh-Hant-TW"];
+/* Language order */
+const LANG_ORDER = ["en", "fr", "ja", "lo", "ms", "my", "th", "zh-Hans", "zh-Hant-HK", "zh-Hant-TW"];
 
 const NATIVE_NAMES = {
+  "en": "English",
   "fr": "Français",
   "ja": "日本語",
   "lo": "ລາວ",
@@ -598,7 +622,7 @@ const NATIVE_NAMES = {
   "zh-Hant-TW": "正體中文（台灣）"
 };
 
-const FALLBACK = "zh-Hans";
+const FALLBACK = "en";
 const select = document.getElementById("lang");
 
 LANG_ORDER.forEach(function (code) {
