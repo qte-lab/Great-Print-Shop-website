@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&family=Noto+Sans+HK:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&family=Noto+Sans+Lao:wght@400;500;600;700&family=Noto+Sans+Myanmar:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+HK:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&family=Noto+Sans+Lao:wght@400;500;600;700&family=Noto+Sans+Myanmar:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Sans+Tamil:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&family=Noto+Sans+Tibetan:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 :root {
   color-scheme: light dark;
@@ -62,6 +62,11 @@ html:lang(ja) {
   --font-display: var(--font-body);
 }
 
+html:lang(ko) {
+  --font-body: 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+  --font-display: var(--font-body);
+}
+
 html:lang(zh-Hans) {
   --font-body: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
   --font-display: var(--font-body);
@@ -89,6 +94,31 @@ html:lang(lo) {
 
 html:lang(my) {
   --font-body: 'Noto Sans Myanmar', 'Myanmar Text', sans-serif;
+  --font-display: var(--font-body);
+}
+
+html:lang(hi) {
+  --font-body: 'Noto Sans Devanagari', sans-serif;
+  --font-display: var(--font-body);
+}
+
+html:lang(ne) {
+  --font-body: 'Noto Sans Devanagari', sans-serif;
+  --font-display: var(--font-body);
+}
+
+html:lang(ta) {
+  --font-body: 'Noto Sans Tamil', sans-serif;
+  --font-display: var(--font-body);
+}
+
+html:lang(dz) {
+  --font-body: 'Noto Sans Tibetan', sans-serif;
+  --font-display: var(--font-body);
+}
+
+html:lang(ar), html:lang(fa), html[lang="ms-MY-Arab"] {
+  --font-body: 'Noto Sans Arabic', sans-serif;
   --font-display: var(--font-body);
 }
 
@@ -168,17 +198,25 @@ button, select { color: inherit; }
 .eyebrow { display: flex; align-items: center; gap: 10px; margin: 0 0 22px; color: var(--forest-text); font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .1em; font-size: 11px; font-weight: 500; }
 .eyebrow-line { width: 30px; height: 1px; background: currentColor; display: inline-block; }
 h1, h2, h3, p { margin-top: 0; }
-h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.06em; }
+h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.06em; text-wrap: balance; }
 h1 { max-width: 650px; margin-bottom: 25px; font-size: clamp(48px, 6vw, 78px); line-height: 1.08; font-weight: 600; text-wrap: balance; }
 html:lang(ja) h1, html:lang(ja) h2, html:lang(ja) h3,
 html:lang(zh-Hans) h1, html:lang(zh-Hans) h2, html:lang(zh-Hans) h3,
 html:lang(zh-Hant-HK) h1, html:lang(zh-Hant-HK) h2, html:lang(zh-Hant-HK) h3,
 html:lang(zh-Hant-TW) h1, html:lang(zh-Hant-TW) h2, html:lang(zh-Hant-TW) h3,
+html:lang(ko) h1, html:lang(ko) h2, html:lang(ko) h3,
 html:lang(th) h1, html:lang(th) h2, html:lang(th) h3,
 html:lang(lo) h1, html:lang(lo) h2, html:lang(lo) h3,
-html:lang(my) h1, html:lang(my) h2, html:lang(my) h3 { letter-spacing: 0; }
-html:lang(ja) h1, html:lang(zh-Hans) h1, html:lang(zh-Hant-HK) h1, html:lang(zh-Hant-TW) h1 { line-height: 1.35; }
-html:lang(ja) h2, html:lang(zh-Hans) h2, html:lang(zh-Hant-HK) h2, html:lang(zh-Hant-TW) h2 { line-height: 1.3; }
+html:lang(my) h1, html:lang(my) h2, html:lang(my) h3,
+html:lang(hi) h1, html:lang(hi) h2, html:lang(hi) h3,
+html:lang(ne) h1, html:lang(ne) h2, html:lang(ne) h3,
+html:lang(ta) h1, html:lang(ta) h2, html:lang(ta) h3,
+html:lang(dz) h1, html:lang(dz) h2, html:lang(dz) h3,
+html:lang(ar) h1, html:lang(ar) h2, html:lang(ar) h3,
+html:lang(fa) h1, html:lang(fa) h2, html:lang(fa) h3,
+html[lang="ms-MY-Arab"] h1, html[lang="ms-MY-Arab"] h2, html[lang="ms-MY-Arab"] h3 { letter-spacing: 0; }
+html:lang(ja) h1, html:lang(zh-Hans) h1, html:lang(zh-Hant-HK) h1, html:lang(zh-Hant-TW) h1, html:lang(ko) h1 { line-height: 1.35; }
+html:lang(ja) h2, html:lang(zh-Hans) h2, html:lang(zh-Hant-HK) h2, html:lang(zh-Hant-TW) h2, html:lang(ko) h2 { line-height: 1.3; }
 html:lang(th) h1, html:lang(lo) h1 { line-height: 1.55; }
 html:lang(th) h2, html:lang(lo) h2 { line-height: 1.5; }
 html:lang(my) h1 { line-height: 1.75; }
@@ -186,7 +224,16 @@ html:lang(my) h2, html:lang(my) h3 { line-height: 1.65; }
 html:lang(my) h1 { font-size: clamp(44px, 6.8vw, 80px); }
 html:lang(my) body { line-height: 1.95; }
 html:lang(th) body, html:lang(lo) body { line-height: 1.8; }
-html:lang(ja) body, html:lang(zh-Hans) body, html:lang(zh-Hant-HK) body, html:lang(zh-Hant-TW) body { line-height: 1.7; }
+html:lang(hi) h1, html:lang(ne) h1 { font-size: clamp(44px, 5.2vw, 66px); line-height: 1.4; }
+html:lang(hi) h2, html:lang(hi) h3, html:lang(ne) h2, html:lang(ne) h3,
+html:lang(ta) h1, html:lang(ta) h2, html:lang(ta) h3,
+html:lang(dz) h1, html:lang(dz) h2, html:lang(dz) h3 { line-height: 1.5; }
+html:lang(ar) h1, html:lang(fa) h1, html[lang="ms-MY-Arab"] h1 { line-height: 1.5; }
+html:lang(ar) h2, html:lang(ar) h3, html:lang(fa) h2, html:lang(fa) h3,
+html[lang="ms-MY-Arab"] h2, html[lang="ms-MY-Arab"] h3 { line-height: 1.45; }
+html:lang(hi) body, html:lang(ne) body, html:lang(ta) body, html:lang(dz) body,
+html:lang(ar) body, html:lang(fa) body, html[lang="ms-MY-Arab"] body { line-height: 1.8; }
+html:lang(ja) body, html:lang(zh-Hans) body, html:lang(zh-Hant-HK) body, html:lang(zh-Hant-TW) body, html:lang(ko) body { line-height: 1.7; }
 .hero-body { max-width: 530px; margin-bottom: 30px; color: var(--hero-body); font-size: 17px; line-height: 1.65; }
 .hero-actions { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
 .button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; border: 1px solid transparent; border-radius: 999px; padding: 14px 19px; text-decoration: none; font-size: 13px; font-weight: 700; transition: transform .2s ease, box-shadow .2s ease, background .2s ease; }
@@ -272,28 +319,48 @@ html[dir="rtl"] .contact-link strong { text-align: right; }
 .hero-body, .section-heading > p, .pricing-heading > p, .service-card p, .price-aside p, .contact-copy > p, .area-copy > p, .address-row span { overflow-wrap: anywhere; }
 .contact-link strong { overflow-wrap: anywhere; }
 
-html:lang(ja) .eyebrow, html:lang(zh-Hans) .eyebrow, html:lang(zh-Hant-HK) .eyebrow, html:lang(zh-Hant-TW) .eyebrow,
-html:lang(th) .eyebrow, html:lang(lo) .eyebrow, html:lang(my) .eyebrow { font-family: var(--font-body); text-transform: none; letter-spacing: 0; }
-html:lang(ja) .campus-note, html:lang(zh-Hans) .campus-note, html:lang(zh-Hant-HK) .campus-note, html:lang(zh-Hant-TW) .campus-note,
-html:lang(th) .campus-note, html:lang(lo) .campus-note, html:lang(my) .campus-note { font-family: var(--font-body); text-transform: none; letter-spacing: 0; line-height: 1.7; }
-html:lang(ja) .service-card h3, html:lang(zh-Hans) .service-card h3, html:lang(zh-Hant-HK) .service-card h3, html:lang(zh-Hant-TW) .service-card h3,
-html:lang(th) .service-card h3, html:lang(lo) .service-card h3, html:lang(my) .service-card h3 { letter-spacing: 0; line-height: 1.45; }
-html:lang(ja) .contact-copy h2, html:lang(zh-Hans) .contact-copy h2, html:lang(zh-Hant-HK) .contact-copy h2, html:lang(zh-Hant-TW) .contact-copy h2,
-html:lang(th) .contact-copy h2, html:lang(lo) .contact-copy h2, html:lang(my) .contact-copy h2 { letter-spacing: 0; line-height: 1.35; }
-html:lang(my) .contact-copy h2 { line-height: 1.75; }
-html:lang(my) .contact-copy h2 { font-size: clamp(40px, 5.4vw, 64px); }
-html:lang(ja) .hero-ticker, html:lang(zh-Hans) .hero-ticker, html:lang(zh-Hant-HK) .hero-ticker, html:lang(zh-Hant-TW) .hero-ticker,
-html:lang(th) .hero-ticker, html:lang(lo) .hero-ticker, html:lang(my) .hero-ticker { font-family: var(--font-body); letter-spacing: 0; }
-html:lang(ja) .hero-scribble, html:lang(zh-Hans) .hero-scribble, html:lang(zh-Hant-HK) .hero-scribble, html:lang(zh-Hant-TW) .hero-scribble,
-html:lang(th) .hero-scribble, html:lang(lo) .hero-scribble, html:lang(my) .hero-scribble { font-family: var(--font-body); letter-spacing: 0; line-height: 1.7; }
-html:lang(ja) .paper-kicker, html:lang(zh-Hans) .paper-kicker, html:lang(zh-Hant-HK) .paper-kicker, html:lang(zh-Hant-TW) .paper-kicker,
-html:lang(th) .paper-kicker, html:lang(lo) .paper-kicker, html:lang(my) .paper-kicker { font-family: var(--font-body); letter-spacing: 0; }
-html:lang(ja) .paper-label, html:lang(zh-Hans) .paper-label, html:lang(zh-Hant-HK) .paper-label, html:lang(zh-Hant-TW) .paper-label,
-html:lang(th) .paper-label, html:lang(lo) .paper-label, html:lang(my) .paper-label { line-height: 1.5; }
-html:lang(ja) .price-label, html:lang(zh-Hans) .price-label, html:lang(zh-Hant-HK) .price-label, html:lang(zh-Hant-TW) .price-label,
-html:lang(th) .price-label, html:lang(lo) .price-label, html:lang(my) .price-label { text-transform: none; letter-spacing: 0; }
-html:lang(ja) .price-unit, html:lang(zh-Hans) .price-unit, html:lang(zh-Hant-HK) .price-unit, html:lang(zh-Hant-TW) .price-unit,
-html:lang(th) .price-unit, html:lang(lo) .price-unit, html:lang(my) .price-unit { font-family: var(--font-body); line-height: 1.6; }
+:is(html:lang(ja), html:lang(zh-Hans), html:lang(zh-Hant-HK), html:lang(zh-Hant-TW), html:lang(ko),
+html:lang(th), html:lang(lo), html:lang(my), html:lang(hi), html:lang(ne), html:lang(ta), html:lang(dz),
+html:lang(ar), html:lang(fa), html[lang="ms-MY-Arab"]) :is(
+  .eyebrow, .campus-note, .hero-stamp, .hero-scribble, .hero-ticker, .paper-kicker,
+  .paper-label, .price-label, .price-unit, .price-card-top, .price-aside-small, .footer-inner p, .back-top
+) { font-family: var(--font-body); letter-spacing: 0; text-transform: none; }
+
+:is(html:lang(ja), html:lang(zh-Hans), html:lang(zh-Hant-HK), html:lang(zh-Hant-TW), html:lang(ko),
+html:lang(th), html:lang(lo), html:lang(my), html:lang(hi), html:lang(ne), html:lang(ta), html:lang(dz),
+html:lang(ar), html:lang(fa), html[lang="ms-MY-Arab"]) :is(h1, h2, h3, .service-card h3, .contact-copy h2) { letter-spacing: 0; }
+
+:is(html:lang(ja), html:lang(zh-Hans), html:lang(zh-Hant-HK), html:lang(zh-Hant-TW), html:lang(ko)) h1 { line-height: 1.35; }
+:is(html:lang(ja), html:lang(zh-Hans), html:lang(zh-Hant-HK), html:lang(zh-Hant-TW), html:lang(ko)) :is(h2, h3) { line-height: 1.3; }
+:is(html:lang(ja), html:lang(zh-Hans), html:lang(zh-Hant-HK), html:lang(zh-Hant-TW), html:lang(ko)) :is(body) { line-height: 1.7; }
+:is(html:lang(th), html:lang(lo)) h1 { line-height: 1.55; }
+:is(html:lang(th), html:lang(lo)) h2 { line-height: 1.5; }
+html:lang(th) body, html:lang(lo) body { line-height: 1.8; }
+html:lang(my) h1 { font-size: clamp(44px, 6.8vw, 80px); line-height: 1.75; }
+html:lang(my) h2, html:lang(my) h3 { line-height: 1.65; }
+html:lang(my) body { line-height: 1.95; }
+:is(html:lang(hi), html:lang(ne)) h1 { font-size: clamp(44px, 5.2vw, 66px); line-height: 1.4; }
+:is(html:lang(hi), html:lang(ne)) h2, :is(html:lang(hi), html:lang(ne)) h3 { line-height: 1.4; }
+:is(html:lang(ta), html:lang(dz)) :is(h1, h2, h3) { line-height: 1.5; }
+:is(html:lang(ar), html:lang(fa), html[lang="ms-MY-Arab"]) h1 { line-height: 1.5; }
+:is(html:lang(ar), html:lang(fa), html[lang="ms-MY-Arab"]) :is(h2, h3) { line-height: 1.45; }
+:is(html:lang(hi), html:lang(ne), html:lang(ta), html:lang(dz), html:lang(ar), html:lang(fa), html[lang="ms-MY-Arab"]) body { line-height: 1.8; }
+
+:is(html:lang(ja), html:lang(zh-Hans), html:lang(zh-Hant-HK), html:lang(zh-Hant-TW), html:lang(ko),
+html:lang(th), html:lang(lo), html:lang(my), html:lang(hi), html:lang(ne), html:lang(ta), html:lang(dz),
+html:lang(ar), html:lang(fa), html[lang="ms-MY-Arab"]) :is(.service-card h3, .contact-copy h2, .paper-label) { line-height: 1.5; }
+:is(html:lang(hi), html:lang(ne), html:lang(ta), html:lang(dz), html:lang(ar), html:lang(fa), html[lang="ms-MY-Arab"])
+  :is(.section-heading h2, .pricing-heading h2, .area-copy h2) { font-size: clamp(38px, 4.2vw, 56px); line-height: 1.4; }
+:is(html:lang(hi), html:lang(ne), html:lang(ta), html:lang(dz), html:lang(ar), html:lang(fa), html[lang="ms-MY-Arab"])
+  .contact-copy h2 { font-size: clamp(42px, 5.2vw, 64px); }
+:is(html:lang(my)) .contact-copy h2 { font-size: clamp(40px, 5.4vw, 64px); line-height: 1.75; }
+:is(html:lang(ja), html:lang(zh-Hans), html:lang(zh-Hant-HK), html:lang(zh-Hant-TW), html:lang(ko),
+html:lang(th), html:lang(lo), html:lang(my), html:lang(hi), html:lang(ne), html:lang(ta), html:lang(dz),
+html:lang(ar), html:lang(fa), html[lang="ms-MY-Arab"]) :is(.hero-scribble, .campus-note) { line-height: 1.7; }
+:is(html:lang(ja), html:lang(zh-Hans), html:lang(zh-Hant-HK), html:lang(zh-Hant-TW), html:lang(ko),
+html:lang(th), html:lang(lo), html:lang(my), html:lang(hi), html:lang(ne), html:lang(ta), html:lang(dz),
+html:lang(ar), html:lang(fa), html[lang="ms-MY-Arab"]) .price-unit { line-height: 1.6; }
+html:lang(my) :is(.section-heading h2, .pricing-heading h2, .area-copy h2) { line-height: 1.65; }
 
 .area-section { padding-top: 112px; padding-bottom: 112px; }
 .area-card { display: grid; grid-template-columns: .9fr 1.1fr; gap: 90px; align-items: center; padding: 58px; background: var(--soft-paper); }
