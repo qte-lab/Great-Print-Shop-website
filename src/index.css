@@ -113,8 +113,8 @@ button, select { color: inherit; }
 .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 700; letter-spacing: -0.03em; }
 .brand-mark { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border: 1.5px solid var(--warm-ink); border-radius: 9px; color: var(--warm-ink); background: var(--yellow); }
 .brand-name { font-family: 'Space Grotesk', sans-serif; font-size: 17px; }
-.brand-dot { color: var(--coral); font-size: 12px; margin-left: -5px; }
-.desktop-nav { display: flex; align-items: center; gap: 28px; margin-left: auto; }
+.brand-dot { color: var(--coral); font-size: 12px; margin-inline-start: -5px; }
+.desktop-nav { display: flex; align-items: center; gap: 28px; margin-inline-start: auto; }
 .desktop-nav a { font-size: 13px; font-weight: 600; text-decoration: none; color: var(--muted); transition: color .2s ease; }
 .desktop-nav a:hover { color: var(--ink); }
 .header-actions { display: flex; align-items: center; gap: 13px; }
@@ -212,8 +212,8 @@ html:lang(ja) body, html:lang(zh-Hans) body, html:lang(zh-Hant-HK) body, html:la
 .paper-label { position: relative; z-index: 1; margin: 13px 0 auto; font-size: 12px; font-weight: 700; text-align: center; }
 .paper-label span { display: block; margin-top: 4px; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 400; }
 .paper-footer { padding-top: 15px; border-top: 1px solid var(--line); }
-.hero-stamp { position: absolute; top: 22px; right: 6px; z-index: 3; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100px; height: 100px; border: 1.5px solid var(--coral); border-radius: 50%; color: var(--coral); font-family: 'DM Mono', monospace; font-size: 10px; line-height: 1.35; letter-spacing: .12em; text-align: center; transform: rotate(13deg); }
-.hero-scribble { position: absolute; z-index: 3; bottom: 8px; left: 20px; display: flex; flex-direction: column; color: var(--forest-text); font-family: 'DM Mono', monospace; font-size: 12px; line-height: 1.5; letter-spacing: .05em; transform: rotate(-13deg); }
+.hero-stamp { position: absolute; top: 22px; inset-inline-end: 6px; z-index: 3; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100px; height: 100px; border: 1.5px solid var(--coral); border-radius: 50%; color: var(--coral); font-family: 'DM Mono', monospace; font-size: 10px; line-height: 1.35; letter-spacing: .12em; text-align: center; transform: rotate(13deg); }
+.hero-scribble { position: absolute; z-index: 3; bottom: 8px; inset-inline-start: 20px; display: flex; flex-direction: column; color: var(--forest-text); font-family: 'DM Mono', monospace; font-size: 12px; line-height: 1.5; letter-spacing: .05em; transform: rotate(-13deg); }
 .hero-ticker { display: flex; align-items: center; justify-content: space-around; gap: 20px; padding: 12px 4%; overflow: hidden; color: var(--paper-bright); background: var(--forest); font-family: 'DM Mono', monospace; font-size: 10px; line-height: 1.5; letter-spacing: .15em; white-space: nowrap; }
 
 .section { padding-top: 135px; padding-bottom: 135px; }
@@ -261,11 +261,12 @@ html:lang(ja) body, html:lang(zh-Hans) body, html:lang(zh-Hant-HK) body, html:la
 .contact-copy > p:not(.eyebrow) { max-width: 420px; margin-bottom: 30px; color: rgba(255,253,248,.68); font-size: 15px; line-height: 1.65; }
 .contact-links { border-top: 1px solid rgba(255,255,255,.3); }
 .contact-link { display: flex; align-items: center; gap: 15px; padding: 18px 0; border-bottom: 1px solid rgba(255,255,255,.3); color: var(--paper-bright); text-decoration: none; transition: padding .2s ease, color .2s ease; }
-.contact-link:hover { padding-left: 8px; color: var(--yellow); }
+.contact-link:hover { padding-inline-start: 8px; color: var(--yellow); }
 .contact-icon { display: grid; place-items: center; width: 37px; height: 37px; border: 1px solid rgba(255,255,255,.4); border-radius: 50%; }
 .contact-link > span:nth-child(2) { display: flex; flex: 1; flex-direction: column; gap: 2px; }
 .contact-link small { color: rgba(255,255,255,.58); font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; }
 .contact-link strong { font-size: 14px; font-weight: 500; }
+html[dir="rtl"] .contact-link strong { text-align: right; }
 
 .hero-copy, .section-heading, .service-card, .price-card, .price-aside, .contact-copy, .contact-link, .area-copy { min-width: 0; }
 .hero-body, .section-heading > p, .pricing-heading > p, .service-card p, .price-aside p, .contact-copy > p, .area-copy > p, .address-row span { overflow-wrap: anywhere; }
@@ -303,8 +304,8 @@ html:lang(th) .price-unit, html:lang(lo) .price-unit, html:lang(my) .price-unit 
 .area-circle::after { inset: 52px; }
 .area-pin { position: absolute; top: 50%; left: 50%; display: grid; place-items: center; width: 63px; height: 63px; border-radius: 50%; color: var(--paper-bright); background: var(--coral); transform: translate(-50%, -50%); }
 .area-label { position: absolute; padding: 5px 8px; color: var(--paper-bright); background: var(--forest); font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .09em; }
-.area-label-one { top: 28px; left: 24px; transform: rotate(-7deg); }
-.area-label-two { right: 25px; bottom: 28px; transform: rotate(7deg); }
+.area-label-one { top: 28px; inset-inline-start: 24px; transform: rotate(-7deg); }
+.area-label-two { inset-inline-end: 25px; bottom: 28px; transform: rotate(7deg); }
 .area-copy h2 { max-width: 500px; margin-bottom: 21px; }
 .area-copy > p:not(.eyebrow) { max-width: 500px; margin-bottom: 29px; color: var(--muted); font-size: 15px; line-height: 1.7; }
 .address-row { display: flex; gap: 11px; align-items: flex-start; max-width: 520px; padding: 12px 0; border-top: 1px solid var(--line); color: var(--forest-text); font-size: 13px; line-height: 1.55; }
@@ -365,8 +366,8 @@ html:lang(th) .price-unit, html:lang(lo) .price-unit, html:lang(my) .price-unit 
   .paper-price span { padding-top: 10px; }
   .paper-label { margin-top: 9px; line-height: 1.5; }
   .paper-footer { padding-top: 10px; }
-  .hero-stamp { right: -1px; top: 9px; transform: scale(.82) rotate(13deg); }
-  .hero-scribble { right: 0; bottom: 3px; left: 0; align-items: center; justify-content: center; flex-direction: row; gap: 7px; width: 100%; white-space: nowrap; font-size: 10px; line-height: 1.5; letter-spacing: 0; transform: none; }
+  .hero-stamp { inset-inline-end: -1px; top: 9px; transform: scale(.82) rotate(13deg); }
+  .hero-scribble { inset-inline: 0; bottom: 3px; align-items: center; justify-content: center; flex-direction: row; gap: 7px; width: 100%; white-space: nowrap; font-size: 10px; line-height: 1.5; letter-spacing: 0; transform: none; }
   .hero-ticker { justify-content: center; gap: 0; min-height: 42px; padding: 9px 18px; font-size: 10px; line-height: 1.8; text-align: center; white-space: normal; }
   .hero-ticker span:nth-child(n+2) { display: none; }
   .section { padding-top: 87px; padding-bottom: 87px; }
@@ -382,7 +383,7 @@ html:lang(th) .price-unit, html:lang(lo) .price-unit, html:lang(my) .price-unit 
   .area-card { padding: 18px; }
   .area-copy { padding: 10px 5px 16px; }
   .footer-inner { grid-template-columns: 1fr auto; padding: 20px 0; }
-  .footer-inner p { grid-column: 1 / -1; grid-row: 2; text-align: left; line-height: 1.5; }
+  .footer-inner p { grid-column: 1 / -1; grid-row: 2; text-align: start; line-height: 1.5; }
 }
 
 @media (max-width: 380px) {

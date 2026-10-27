@@ -21,7 +21,7 @@ export const languages = Object.keys(content).sort((a, b) => a.localeCompare(b))
 const lineLanguages = new Set(['ja-JP', 'th-TH', 'zh-Hant-TW'])
 const wechatLanguages = new Set(['zh-Hans-CN'])
 const whatsappLanguages = new Set([
-  'ar-SO',
+  'ar',
   'de-DE',
   'dz-BT',
   'en-AU',
@@ -83,6 +83,7 @@ export function matchLanguage(locale: string): Language | undefined {
   }
 
   const preferredRegions: Record<string, string> = {
+    ar: 'ar',
     en: 'en-US',
     fr: 'fr-CA',
     ja: 'ja-JP',
@@ -97,7 +98,8 @@ export function matchLanguage(locale: string): Language | undefined {
 }
 
 export function isRightToLeft(language: Language): boolean {
-  return language.startsWith('ar-')
+  return language === 'ar'
+    || language.startsWith('ar-')
     || language.startsWith('fa-')
     || language.split('-').some((part) => part.toLowerCase() === 'arab')
 }
