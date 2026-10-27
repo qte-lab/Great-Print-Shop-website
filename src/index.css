@@ -169,7 +169,7 @@ button, select { color: inherit; }
 .eyebrow-line { width: 30px; height: 1px; background: currentColor; display: inline-block; }
 h1, h2, h3, p { margin-top: 0; }
 h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.06em; }
-h1 { max-width: 650px; margin-bottom: 25px; font-size: clamp(58px, 8.4vw, 112px); line-height: 1.08; font-weight: 600; }
+h1 { max-width: 650px; margin-bottom: 25px; font-size: clamp(48px, 6vw, 78px); line-height: 1.08; font-weight: 600; text-wrap: balance; }
 html:lang(ja) h1, html:lang(ja) h2, html:lang(ja) h3,
 html:lang(zh-Hans) h1, html:lang(zh-Hans) h2, html:lang(zh-Hans) h3,
 html:lang(zh-Hant-HK) h1, html:lang(zh-Hant-HK) h2, html:lang(zh-Hant-HK) h3,
@@ -353,7 +353,7 @@ html:lang(th) .price-unit, html:lang(lo) .price-unit, html:lang(my) .price-unit 
   .header-order span { display: none; }
   .header-order svg { width: 17px; height: 17px; }
   .hero-inner { min-height: auto; padding-top: 57px; padding-bottom: 47px; }
-  h1 { font-size: clamp(54px, 15vw, 79px); }
+  h1 { font-size: clamp(40px, 12vw, 64px); }
   .hero-body { font-size: 15px; }
   .hero-actions { gap: 18px; }
   .button { padding: 13px 16px; }
