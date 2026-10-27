@@ -35,8 +35,9 @@ const whatsappLanguages = new Set([
   'hi-IN',
   'ko-KR',
   'lo-LA',
-  'ms-MY',
-  'ms-SG',
+  'ms-MY-Arab',
+  'ms-MY-Latn',
+  'ms-SG-Latn',
   'my-MM',
   'ne-NP',
   'so-SO',
@@ -77,13 +78,16 @@ export function matchLanguage(locale: string): Language | undefined {
     return languages.find((language) => language.startsWith(script))
       ?? languages.find((language) => language.toLowerCase().startsWith('zh-'))
   }
+  if (languageCode === 'ms' && normalized.split('-').includes('arab')) {
+    return languages.find((language) => language.toLowerCase() === 'ms-my-arab')
+  }
 
   const preferredRegions: Record<string, string> = {
     en: 'en-US',
     fr: 'fr-CA',
     ja: 'ja-JP',
     lo: 'lo-LA',
-    ms: 'ms-MY',
+    ms: 'ms-MY-Latn',
     my: 'my-MM',
     th: 'th-TH',
   }
@@ -93,5 +97,7 @@ export function matchLanguage(locale: string): Language | undefined {
 }
 
 export function isRightToLeft(language: Language): boolean {
-  return language.startsWith('ar-') || language.startsWith('fa-')
+  return language.startsWith('ar-')
+    || language.startsWith('fa-')
+    || language.split('-').some((part) => part.toLowerCase() === 'arab')
 }
