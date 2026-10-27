@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react'
 import { createPortal } from 'react-dom'
 import {
   ChevronDown,
@@ -70,10 +70,16 @@ function LanguagePicker({
   languageLabel: string
 }) {
   const [isOpen, setIsOpen] = useState(false)
+  const [isClosing, setIsClosing] = useState(false)
+  const [opensAbove, setOpensAbove] = useState(false)
   const [menuStyle, setMenuStyle] = useState<CSSProperties>({})
   const pickerRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
   const menuRef = useRef<HTMLDivElement>(null)
+
+  const closeMenu = useCallback(() => {
+    setIsClosing(true)
+  }, [])
 
   useEffect(() => {
     if (!isOpen) return
@@ -83,13 +89,14 @@ function LanguagePicker({
       if (!bounds) return
       const isMobile = window.matchMedia('(max-width: 600px)').matches
       const width = Math.min(isMobile ? 320 : 360, window.innerWidth - 24)
-      const preferredHeight = Math.min(window.innerHeight * (isMobile ? 0.48 : 0.65), isMobile ? 420 : 560)
+      const preferredHeight = Math.min(window.innerHeight * (isMobile ? 0.32 : 0.65), isMobile ? 280 : 560)
       const spaceBelow = window.innerHeight - bounds.bottom - 20
       const spaceAbove = bounds.top - 20
       const openAbove = spaceBelow < Math.min(preferredHeight, 240) && spaceAbove > spaceBelow
       const availableSpace = openAbove ? spaceAbove : spaceBelow
       const maxHeight = Math.max(120, Math.min(preferredHeight, availableSpace))
 
+      setOpensAbove(openAbove)
       setMenuStyle({
         position: 'fixed',
         top: openAbove ? Math.max(12, bounds.top - maxHeight - 8) : bounds.bottom + 8,
@@ -106,13 +113,13 @@ function LanguagePicker({
         !pickerRef.current?.contains(target) &&
         !menuRef.current?.contains(target)
       ) {
-        setIsOpen(false)
+        closeMenu()
       }
     }
 
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        setIsOpen(false)
+        closeMenu()
         triggerRef.current?.focus({ preventScroll: true })
       }
     }
@@ -137,7 +144,7 @@ function LanguagePicker({
       document.removeEventListener('pointerdown', closeOnOutsideClick)
       document.removeEventListener('keydown', closeOnEscape)
     }
-  }, [isOpen])
+  }, [isOpen, closeMenu])
 
   const focusOption = (index: number) => {
     const options = menuRef.current?.querySelectorAll<HTMLButtonElement>('[role="option"]')
@@ -163,7 +170,14 @@ function LanguagePicker({
           aria-haspopup="listbox"
           aria-expanded={isOpen}
           aria-controls="language-options"
-          onClick={() => setIsOpen((open) => !open)}
+          onClick={() => {
+            if (isOpen) {
+              closeMenu()
+            } else {
+              setIsClosing(false)
+              setIsOpen(true)
+            }
+          }}
         >
           <Globe2 size={15} aria-hidden="true" />
           <span className="language-picker-label" dir="ltr">{language}</span>
@@ -173,11 +187,17 @@ function LanguagePicker({
       {isOpen && createPortal(
         <div
           id="language-options"
-          className="language-picker-menu"
+          className={`language-picker-menu${isClosing ? ' is-closing' : ''}${opensAbove ? ' opens-above' : ''}`}
           role="listbox"
           aria-label={languageLabel}
+          aria-hidden={isClosing}
           ref={menuRef}
           style={menuStyle}
+          onAnimationEnd={(event) => {
+            if (event.target !== event.currentTarget || !isClosing) return
+            setIsOpen(false)
+            setIsClosing(false)
+          }}
           onKeyDown={(event) => {
             const target = event.target
             const optionCode = target instanceof HTMLButtonElement
@@ -211,7 +231,7 @@ function LanguagePicker({
                 className="language-picker-option"
                 onClick={() => {
                   onChange(code)
-                  setIsOpen(false)
+                  closeMenu()
                   triggerRef.current?.focus({ preventScroll: true })
                 }}
               >
