@@ -151,22 +151,14 @@ button, select { color: inherit; }
   from { opacity: 0; }
   to { opacity: 1; }
 }
-@keyframes page-element-enter {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
 .hero-copy, .hero-art { animation: page-content-enter .6s ease-out .08s both; }
 .hero-ticker { animation: page-content-enter .55s ease-out .2s both; }
-.services-section, .pricing-section, .contact-section, .area-section, .site-footer { animation: page-content-enter .65s ease-out both; }
-.services-section { animation-delay: .12s; }
-.pricing-section { animation-delay: .2s; }
-.contact-section { animation-delay: .28s; }
-.area-section { animation-delay: .36s; }
-.site-footer { animation-delay: .44s; }
-.service-card, .price-card, .contact-link { animation: page-element-enter .55s ease-out both; }
-.service-card:nth-child(2), .price-card:nth-child(2), .contact-link:nth-child(2) { animation-delay: .08s; }
-.service-card:nth-child(3), .contact-link:nth-child(3) { animation-delay: .16s; }
-.contact-link:nth-child(4) { animation-delay: .24s; }
+.scroll-reveal { opacity: 0; transform: translateY(22px); transition: opacity .65s ease, transform .65s cubic-bezier(.2,.7,.2,1); }
+.scroll-reveal.is-visible { opacity: 1; transform: translateY(0); }
+.service-card.scroll-reveal, .price-card.scroll-reveal, .contact-link.scroll-reveal { transition-delay: .06s; }
+.service-card.scroll-reveal:nth-child(2), .price-card.scroll-reveal:nth-child(2), .contact-link.scroll-reveal:nth-child(2) { transition-delay: .12s; }
+.service-card.scroll-reveal:nth-child(3), .contact-link.scroll-reveal:nth-child(3) { transition-delay: .18s; }
+.contact-link.scroll-reveal:nth-child(4) { transition-delay: .24s; }
 .header-order { display: inline-flex; align-items: center; gap: 7px; padding: 11px 15px; border-radius: 999px; color: var(--action-fg); background: var(--action-bg); text-decoration: none; font-size: 12px; font-weight: 700; transition: transform .2s ease, background .2s ease; }
 .header-order:hover { transform: translateY(-2px); background: var(--forest-hover); }
 
@@ -404,4 +396,5 @@ html:lang(th) .price-unit, html:lang(lo) .price-unit, html:lang(my) .price-unit 
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  .scroll-reveal { opacity: 1; transform: none; }
 }

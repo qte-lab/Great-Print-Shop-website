@@ -307,6 +307,33 @@ function App() {
     }
   }, [language, text])
 
+  useEffect(() => {
+    const revealTargets = document.querySelectorAll<HTMLElement>('.scroll-reveal')
+    const showAll = () => revealTargets.forEach((element) => element.classList.add('is-visible'))
+
+    if (
+      !('IntersectionObserver' in window) ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      showAll()
+      return
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return
+        entry.target.classList.add('is-visible')
+        observer.unobserve(entry.target)
+      })
+    }, {
+      threshold: 0.12,
+      rootMargin: '0px 0px -6% 0px',
+    })
+
+    revealTargets.forEach((element) => observer.observe(element))
+    return () => observer.disconnect()
+  }, [])
+
   return (
     <div className="app-shell">
       <header className="site-header">
@@ -359,14 +386,14 @@ function App() {
           <div className="hero-ticker" aria-hidden="true"><span>{text.ticker}</span><span>{text.ticker}</span><span>{text.ticker}</span><span>{text.ticker}</span></div>
         </section>
 
-        <section className="section services-section" id="services">
+        <section className="section services-section scroll-reveal" id="services">
           <div className="section-heading split-heading">
             <div><p className="eyebrow"><span className="eyebrow-line" />{text.servicesEyebrow}</p><h2>{text.servicesTitle}</h2></div>
             <p>{text.servicesBody}</p>
           </div>
           <div className="service-list">
             {serviceItems.map(({ icon: Icon, key, textKey }, index) => (
-              <article className="service-card" key={key}>
+              <article className="service-card scroll-reveal" key={key}>
                 <div className="service-number">0{index + 1}</div>
                 <div className="service-icon"><Icon size={25} strokeWidth={1.8} /></div>
                 <h3>{text[key]}</h3>
@@ -376,35 +403,35 @@ function App() {
           </div>
         </section>
 
-        <section className="section pricing-section" id="pricing">
+        <section className="section pricing-section scroll-reveal" id="pricing">
           <div className="pricing-heading"><p className="eyebrow"><span className="eyebrow-line" />{text.pricingEyebrow}</p><h2>{text.pricingTitle}</h2><p>{text.pricingBody}</p></div>
           <div className="pricing-layout">
             <div className="pricing-cards">
-              <article className="price-card price-card-green"><div className="price-card-top"><span className="price-index">01</span><span className="price-label">A4 / {text.page}</span></div><div className="price-name">{text.blackWhite}</div><div className="price-value"><strong>1</strong><span>฿</span></div><div className="price-unit">{text.perPage}</div></article>
-              <article className="price-card price-card-coral"><div className="price-card-top"><span className="price-index">02</span><span className="price-label">A4 / {text.page}</span></div><div className="price-name">{text.color}</div><div className="price-value"><strong>5</strong><span>฿</span></div><div className="price-unit">{text.perPage}</div></article>
+              <article className="price-card price-card-green scroll-reveal"><div className="price-card-top"><span className="price-index">01</span><span className="price-label">A4 / {text.page}</span></div><div className="price-name">{text.blackWhite}</div><div className="price-value"><strong>1</strong><span>฿</span></div><div className="price-unit">{text.perPage}</div></article>
+              <article className="price-card price-card-coral scroll-reveal"><div className="price-card-top"><span className="price-index">02</span><span className="price-label">A4 / {text.page}</span></div><div className="price-name">{text.color}</div><div className="price-value"><strong>5</strong><span>฿</span></div><div className="price-unit">{text.perPage}</div></article>
             </div>
-            <div className="price-aside"><div className="price-aside-mark">✓</div><p>{text.samePrice}</p><div className="dotted-line" /><p className="price-aside-small">A4 · {text.blackWhite} · {text.color}</p></div>
+            <div className="price-aside scroll-reveal"><div className="price-aside-mark">✓</div><p>{text.samePrice}</p><div className="dotted-line" /><p className="price-aside-small">A4 · {text.blackWhite} · {text.color}</p></div>
           </div>
         </section>
 
-        <section className="contact-section" id="contact">
+        <section className="contact-section scroll-reveal" id="contact">
           <div className="contact-inner">
-            <div className="contact-copy"><p className="eyebrow eyebrow-light"><span className="eyebrow-line" />{text.contactEyebrow}</p><h2>{text.contactTitle}</h2><p>{text.contactBody}</p><a className="button button-light" href={contactHref} target={contactChannel === 'email' ? undefined : '_blank'} rel={contactChannel === 'email' ? undefined : 'noreferrer'}>{text.orderNow}<ContactBrandIcon channel={contactChannel} size={18} /></a></div>
+            <div className="contact-copy scroll-reveal"><p className="eyebrow eyebrow-light"><span className="eyebrow-line" />{text.contactEyebrow}</p><h2>{text.contactTitle}</h2><p>{text.contactBody}</p><a className="button button-light" href={contactHref} target={contactChannel === 'email' ? undefined : '_blank'} rel={contactChannel === 'email' ? undefined : 'noreferrer'}>{text.orderNow}<ContactBrandIcon channel={contactChannel} size={18} /></a></div>
             <div className="contact-links">
-              <a className="contact-link" href="mailto:greatprintshop@outlook.com"><span className="contact-icon"><ContactBrandIcon channel="email" /></span><span><small>{text.email}</small><strong>greatprintshop@outlook.com</strong></span><ChevronRight size={17} aria-hidden="true" /></a>
-              <a className="contact-link" href="https://page.line.me/073jmhzj" target="_blank" rel="noreferrer"><span className="contact-icon"><ContactBrandIcon channel="line" /></span><span><small>{text.line}</small><strong>@073jmhzj</strong></span><ExternalLink size={15} aria-hidden="true" /></a>
-              <a className="contact-link" href="https://wa.me/660616648336" target="_blank" rel="noreferrer"><span className="contact-icon"><ContactBrandIcon channel="whatsapp" /></span><span><small>{text.whatsapp}</small><strong>+66 061 664 8336</strong></span><ExternalLink size={15} aria-hidden="true" /></a>
-              <a className="contact-link" href="weixin://" target="_blank" rel="noreferrer"><span className="contact-icon"><ContactBrandIcon channel="wechat" /></span><span><small>{text.wechat}</small><strong>GreatPrintShop</strong></span><ExternalLink size={15} aria-hidden="true" /></a>
+              <a className="contact-link scroll-reveal" href="mailto:greatprintshop@outlook.com"><span className="contact-icon"><ContactBrandIcon channel="email" /></span><span><small>{text.email}</small><strong>greatprintshop@outlook.com</strong></span><ChevronRight size={17} aria-hidden="true" /></a>
+              <a className="contact-link scroll-reveal" href="https://page.line.me/073jmhzj" target="_blank" rel="noreferrer"><span className="contact-icon"><ContactBrandIcon channel="line" /></span><span><small>{text.line}</small><strong>@073jmhzj</strong></span><ExternalLink size={15} aria-hidden="true" /></a>
+              <a className="contact-link scroll-reveal" href="https://wa.me/660616648336" target="_blank" rel="noreferrer"><span className="contact-icon"><ContactBrandIcon channel="whatsapp" /></span><span><small>{text.whatsapp}</small><strong>+66 061 664 8336</strong></span><ExternalLink size={15} aria-hidden="true" /></a>
+              <a className="contact-link scroll-reveal" href="weixin://" target="_blank" rel="noreferrer"><span className="contact-icon"><ContactBrandIcon channel="wechat" /></span><span><small>{text.wechat}</small><strong>GreatPrintShop</strong></span><ExternalLink size={15} aria-hidden="true" /></a>
             </div>
           </div>
         </section>
 
-        <section className="section area-section">
+        <section className="section area-section scroll-reveal">
           <div className="area-card"><div className="area-illustration" aria-hidden="true"><div className="area-circle" /><div className="area-pin"><MapPin size={30} /></div><span className="area-label area-label-one">{text.onCampus}</span><span className="area-label area-label-two">{text.nearYou}</span></div><div className="area-copy"><p className="eyebrow"><span className="eyebrow-line" />{text.areaEyebrow}</p><h2>{text.areaTitle}</h2><p>{text.areaBody}</p><div className="address-row"><MapPin size={18} /><span>{text.address}</span></div><div className="address-row"><Clock3 size={18} /><span>{text.hours}</span></div></div></div>
         </section>
       </main>
 
-      <footer className="site-footer"><div className="footer-inner"><div className="footer-brand"><span className="brand-mark"><Printer size={18} strokeWidth={2.2} /></span><span>Great Print Shop</span></div><p>{text.footer}</p><a href="#top" className="back-top">↑ <span>{text.backToTop}</span></a></div></footer>
+      <footer className="site-footer scroll-reveal"><div className="footer-inner"><div className="footer-brand"><span className="brand-mark"><Printer size={18} strokeWidth={2.2} /></span><span>Great Print Shop</span></div><p>{text.footer}</p><a href="#top" className="back-top">↑ <span>{text.backToTop}</span></a></div></footer>
     </div>
   )
 }
