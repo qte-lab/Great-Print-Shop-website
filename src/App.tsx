@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import { createPortal } from 'react-dom'
 import {
   ChevronDown,
   ChevronRight,
@@ -15,7 +16,16 @@ import {
   Truck,
 } from 'lucide-react'
 import './index.css'
-import { content, languages, languageCodes, preferredContact, type ContactChannel, type Language } from './locales'
+import {
+  content,
+  isLanguage,
+  isRightToLeft,
+  languages,
+  matchLanguage,
+  preferredContact,
+  type ContactChannel,
+  type Language,
+} from './locales'
 
 function ContactBrandIcon({ channel, size = 18 }: { channel: ContactChannel; size?: number }) {
   if (channel === 'email') return <Mail size={size} aria-hidden="true" />
@@ -50,8 +60,177 @@ function ContactBrandIcon({ channel, size = 18 }: { channel: ContactChannel; siz
   )
 }
 
-function isLanguage(value: string): value is Language {
-  return (languages as readonly string[]).includes(value)
+function LanguagePicker({
+  language,
+  onChange,
+  languageLabel,
+}: {
+  language: Language
+  onChange: (language: Language) => void
+  languageLabel: string
+}) {
+  const [isOpen, setIsOpen] = useState(false)
+  const [menuStyle, setMenuStyle] = useState<CSSProperties>({})
+  const pickerRef = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const menuRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!isOpen) return
+
+    const updateMenuPosition = () => {
+      const bounds = triggerRef.current?.getBoundingClientRect()
+      if (!bounds) return
+      const isMobile = window.matchMedia('(max-width: 600px)').matches
+      const width = Math.min(isMobile ? 320 : 360, window.innerWidth - 24)
+      const preferredHeight = Math.min(window.innerHeight * (isMobile ? 0.48 : 0.65), isMobile ? 420 : 560)
+      const spaceBelow = window.innerHeight - bounds.bottom - 20
+      const spaceAbove = bounds.top - 20
+      const openAbove = spaceBelow < Math.min(preferredHeight, 240) && spaceAbove > spaceBelow
+      const availableSpace = openAbove ? spaceAbove : spaceBelow
+      const maxHeight = Math.max(120, Math.min(preferredHeight, availableSpace))
+
+      setMenuStyle({
+        position: 'fixed',
+        top: openAbove ? Math.max(12, bounds.top - maxHeight - 8) : bounds.bottom + 8,
+        left: Math.max(12, Math.min(bounds.right - width, window.innerWidth - width - 12)),
+        width,
+        maxHeight,
+      })
+    }
+
+    const closeOnOutsideClick = (event: PointerEvent) => {
+      const target = event.target
+      if (
+        target instanceof Node &&
+        !pickerRef.current?.contains(target) &&
+        !menuRef.current?.contains(target)
+      ) {
+        setIsOpen(false)
+      }
+    }
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsOpen(false)
+        triggerRef.current?.focus({ preventScroll: true })
+      }
+    }
+
+    updateMenuPosition()
+    window.addEventListener('resize', updateMenuPosition)
+    window.addEventListener('scroll', updateMenuPosition, true)
+    document.addEventListener('pointerdown', closeOnOutsideClick)
+    document.addEventListener('keydown', closeOnEscape)
+    const focusFrame = window.requestAnimationFrame(() => {
+      const menu = menuRef.current
+      const selectedOption = menu?.querySelector<HTMLButtonElement>('[aria-selected="true"]')
+      if (!menu || !selectedOption) return
+      selectedOption.focus({ preventScroll: true })
+      menu.scrollTop = Math.max(0, selectedOption.offsetTop - (menu.clientHeight - selectedOption.offsetHeight) / 2)
+    })
+
+    return () => {
+      window.cancelAnimationFrame(focusFrame)
+      window.removeEventListener('resize', updateMenuPosition)
+      window.removeEventListener('scroll', updateMenuPosition, true)
+      document.removeEventListener('pointerdown', closeOnOutsideClick)
+      document.removeEventListener('keydown', closeOnEscape)
+    }
+  }, [isOpen])
+
+  const focusOption = (index: number) => {
+    const options = menuRef.current?.querySelectorAll<HTMLButtonElement>('[role="option"]')
+    if (!options?.length) return
+    const option = options[(index + options.length) % options.length]
+    option.focus({ preventScroll: true })
+    const menu = menuRef.current
+    if (menu && option.offsetTop < menu.scrollTop) {
+      menu.scrollTop = option.offsetTop
+    } else if (menu && option.offsetTop + option.offsetHeight > menu.scrollTop + menu.clientHeight) {
+      menu.scrollTop = option.offsetTop + option.offsetHeight - menu.clientHeight
+    }
+  }
+
+  return (
+    <>
+      <div className="language-picker" ref={pickerRef}>
+        <button
+          ref={triggerRef}
+          className="language-picker-trigger"
+          type="button"
+          aria-label={`${languageLabel}: ${language}`}
+          aria-haspopup="listbox"
+          aria-expanded={isOpen}
+          aria-controls="language-options"
+          onClick={() => setIsOpen((open) => !open)}
+        >
+          <Globe2 size={15} aria-hidden="true" />
+          <span className="language-picker-label" dir="ltr">{language}</span>
+          <ChevronDown className="language-picker-chevron" size={14} aria-hidden="true" />
+        </button>
+      </div>
+      {isOpen && createPortal(
+        <div
+          id="language-options"
+          className="language-picker-menu"
+          role="listbox"
+          aria-label={languageLabel}
+          ref={menuRef}
+          style={menuStyle}
+          onKeyDown={(event) => {
+            const target = event.target
+            const optionCode = target instanceof HTMLButtonElement
+              ? target.dataset.language
+              : undefined
+            const currentIndex = languages.indexOf(optionCode ?? language)
+            if (event.key === 'ArrowDown') {
+              event.preventDefault()
+              focusOption(currentIndex + 1)
+            } else if (event.key === 'ArrowUp') {
+              event.preventDefault()
+              focusOption(currentIndex - 1)
+            } else if (event.key === 'Home') {
+              event.preventDefault()
+              focusOption(0)
+            } else if (event.key === 'End') {
+              event.preventDefault()
+              focusOption(languages.length - 1)
+            }
+          }}
+        >
+          {languages.map((code) => {
+            const rtl = isRightToLeft(code)
+            return (
+              <button
+                key={code}
+                type="button"
+                role="option"
+                aria-selected={code === language}
+                data-language={code}
+                className="language-picker-option"
+                onClick={() => {
+                  onChange(code)
+                  setIsOpen(false)
+                  triggerRef.current?.focus({ preventScroll: true })
+                }}
+              >
+                <span className="language-picker-option-code" dir="ltr">{code}</span>
+                <span
+                  className={`language-picker-option-name${rtl ? ' is-rtl' : ''}`}
+                  lang={code}
+                  dir={rtl ? 'rtl' : 'auto'}
+                >
+                  {content[code].languageName}
+                </span>
+              </button>
+            )
+          })}
+        </div>,
+        document.body,
+      )}
+    </>
+  )
 }
 
 function detectLanguage(): Language {
@@ -64,21 +243,10 @@ function detectLanguage(): Language {
 
   const browserLanguages = navigator.languages?.length ? navigator.languages : [navigator.language]
   for (const browserLanguage of browserLanguages) {
-    const normalized = browserLanguage.toLowerCase().replace('_', '-')
-    if (normalized.startsWith('zh')) {
-      if (normalized.includes('hk') || normalized.includes('mo')) return 'zh-Hant-HK'
-      if (normalized.includes('tw') || normalized.includes('hant')) return 'zh-Hant-TW'
-      return 'zh-Hans'
-    }
-    if (normalized.startsWith('fr')) return 'fr'
-    if (normalized.startsWith('ja')) return 'ja'
-    if (normalized.startsWith('lo')) return 'lo'
-    if (normalized.startsWith('ms')) return 'ms'
-    if (normalized.startsWith('my')) return 'my'
-    if (normalized.startsWith('th')) return 'th'
-    if (normalized.startsWith('en')) return 'en'
+    const language = matchLanguage(browserLanguage)
+    if (language) return language
   }
-  return 'zh-Hans'
+  return matchLanguage('zh-Hans-CN') ?? languages[0]
 }
 const serviceItems = [
   { icon: Sparkles, key: 'quality' as const, textKey: 'qualityText' as const },
@@ -98,8 +266,9 @@ function App() {
   }[contactChannel]
 
   useEffect(() => {
-    const pageTitle = 'Great Print Shop | Campus Printing at Shinawatra University'
+    const pageTitle = `Great Print Shop | ${text.heroTitle}`
     document.documentElement.lang = language
+    document.documentElement.dir = isRightToLeft(language) ? 'rtl' : 'ltr'
     document.title = pageTitle
     for (const selector of [
       'meta[name="description"]',
@@ -133,16 +302,7 @@ function App() {
             <a href="#contact">{text.contactNav}</a>
           </nav>
           <div className="header-actions">
-            <div className="language-picker">
-              <Globe2 size={15} aria-hidden="true" />
-              <label htmlFor="language-select" className="sr-only">{text.languageLabel}</label>
-              <select id="language-select" value={language} onChange={(event) => {
-                if (isLanguage(event.target.value)) setLanguage(event.target.value)
-              }}>
-                {languages.map((code) => <option key={code} value={code}>{languageCodes[code]} · {content[code].languageName}</option>)}
-              </select>
-              <ChevronDown className="language-picker-chevron" size={14} aria-hidden="true" />
-            </div>
+            <LanguagePicker language={language} onChange={setLanguage} languageLabel={text.languageLabel} />
             <a className="header-order" href={contactHref} target={contactChannel === 'email' ? undefined : '_blank'} rel={contactChannel === 'email' ? undefined : 'noreferrer'}>
               <span>{text.orderNow}</span><ContactBrandIcon channel={contactChannel} size={17} />
             </a>

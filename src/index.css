@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+HK:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&family=Noto+Sans+Lao:wght@400;500;600;700&family=Noto+Sans+Myanmar:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&family=Noto+Sans+HK:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&family=Noto+Sans+Lao:wght@400;500;600;700&family=Noto+Sans+Myanmar:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 :root {
   color-scheme: light dark;
@@ -112,12 +112,23 @@ button, select { color: inherit; }
 .desktop-nav a { font-size: 13px; font-weight: 600; text-decoration: none; color: var(--muted); transition: color .2s ease; }
 .desktop-nav a:hover { color: var(--ink); }
 .header-actions { display: flex; align-items: center; gap: 13px; }
-.language-picker { display: flex; align-items: center; gap: 7px; border: 1px solid var(--line); padding: 8px 10px; border-radius: 999px; background: var(--picker-bg); }
+.language-picker { display: flex; align-items: center; max-width: 280px; min-width: 0; border: 1px solid var(--line); border-radius: 999px; background: var(--picker-bg); }
 .language-picker svg { color: var(--forest-text); }
-.language-picker select { border: 0; appearance: none; background: transparent; color: var(--ink); font-size: 12px; font-weight: 700; cursor: pointer; max-width: 150px; }
-.language-picker option { color: var(--ink); background: var(--paper); }
+.language-picker-trigger { display: flex; align-items: center; gap: 7px; min-width: 0; padding: 8px 10px; border: 0; border-radius: inherit; background: transparent; cursor: pointer; }
+.language-picker-label { display: block; overflow: hidden; color: var(--ink); font-size: 12px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
 .language-picker:focus-within { outline: 2px solid var(--forest-text); outline-offset: 3px; }
 .language-picker-chevron { flex: none; pointer-events: none; }
+.language-picker-menu { z-index: 1000; box-sizing: border-box; direction: ltr; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; scrollbar-color: var(--forest-text) var(--soft-paper); scrollbar-width: thin; border: 1px solid var(--line); border-radius: 14px; padding: 6px; color: var(--ink); background: var(--paper); box-shadow: var(--shadow); }
+.language-picker-menu::-webkit-scrollbar { width: 8px; }
+.language-picker-menu::-webkit-scrollbar-track { border-radius: 8px; background: var(--soft-paper); }
+.language-picker-menu::-webkit-scrollbar-thumb { border: 2px solid var(--soft-paper); border-radius: 8px; background: var(--forest-text); }
+.language-picker-option { box-sizing: border-box; display: flex; align-items: center; gap: 12px; width: 100%; min-height: 42px; padding: 8px 10px; border: 0; border-radius: 8px; color: inherit; background: transparent; direction: ltr; text-align: left; cursor: pointer; }
+.language-picker-option:hover, .language-picker-option:focus-visible { outline: none; background: var(--soft-paper); }
+.language-picker-option[aria-selected="true"] { color: var(--paper-bright); background: var(--forest); }
+.language-picker-option-code { flex: none; padding: 3px 6px; border: 1px solid var(--line); border-radius: 5px; direction: ltr; font-size: 12px; }
+.language-picker-option[aria-selected="true"] .language-picker-option-code { border-color: rgba(255,255,255,.4); }
+.language-picker-option-name { flex: 1; min-width: 0; text-align: left; }
+.language-picker-option-name.is-rtl { font-family: 'Noto Sans Arabic', var(--font-body); text-align: right; }
 .header-order { display: inline-flex; align-items: center; gap: 7px; padding: 11px 15px; border-radius: 999px; color: var(--action-fg); background: var(--action-bg); text-decoration: none; font-size: 12px; font-weight: 700; transition: transform .2s ease, background .2s ease; }
 .header-order:hover { transform: translateY(-2px); background: var(--forest-hover); }
 
@@ -302,9 +313,10 @@ html:lang(th) .price-unit, html:lang(lo) .price-unit, html:lang(my) .price-unit 
   .brand-name { font-size: clamp(12px, 3.7vw, 15px); }
   .brand-dot { display: none; }
   .header-actions { gap: 6px; flex: 0 0 auto; }
-  .language-picker { gap: 0; padding: 4px 7px; }
-  .language-picker svg:first-child { display: none; }
-  .language-picker select { width: 68px; max-width: 68px; min-height: 36px; font-size: 11px; }
+  .language-picker { max-width: 42vw; }
+  .language-picker-trigger { gap: 5px; padding: 4px 7px; }
+  .language-picker-label { font-size: 11px; }
+  .language-picker-trigger > svg:first-child { flex: none; width: 14px; height: 14px; }
   .language-picker-chevron { width: 12px; }
   .header-order { min-width: 44px; min-height: 44px; justify-content: center; padding: 10px; }
   .header-order span { display: none; }
@@ -348,7 +360,7 @@ html:lang(th) .price-unit, html:lang(lo) .price-unit, html:lang(my) .price-unit 
   .brand-mark { width: 30px; height: 30px; }
   .brand-name { font-size: 12px; }
   .brand-name { font-size: 12px; }
-  .language-picker select { width: 62px; max-width: 62px; }
+  .language-picker { max-width: 40vw; }
   .header-order { min-width: 42px; min-height: 42px; padding: 9px; }
 }
 
