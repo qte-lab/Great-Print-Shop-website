@@ -321,13 +321,11 @@ function App() {
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        if (!entry.isIntersecting) return
-        entry.target.classList.add('is-visible')
-        observer.unobserve(entry.target)
+        entry.target.classList.toggle('is-visible', entry.isIntersecting)
       })
     }, {
-      threshold: 0.12,
-      rootMargin: '0px 0px -6% 0px',
+      threshold: 0.08,
+      rootMargin: '-4% 0px -4% 0px',
     })
 
     revealTargets.forEach((element) => observer.observe(element))
@@ -360,7 +358,7 @@ function App() {
       <main id="top">
         <section className="hero-section">
           <div className="hero-inner">
-            <div className="hero-copy">
+            <div className="hero-copy scroll-reveal">
               <p className="eyebrow"><span className="eyebrow-line" />{text.eyebrow}</p>
               <h1>{text.heroTitle}</h1>
               <p className="hero-body">{text.heroBody}</p>
@@ -370,7 +368,7 @@ function App() {
               </div>
               <div className="campus-note"><MapPin size={16} aria-hidden="true" /><span>{text.campusNote}</span></div>
             </div>
-            <div className="hero-art" aria-label={text.priceLabel}>
+            <div className="hero-art scroll-reveal" aria-label={text.priceLabel}>
               <div className="hero-stamp">{text.heroStamp.map((line) => <span key={line}>{line}</span>)}</div>
               <div className="paper-card">
                 <div className="paper-topline"><span>GP / 2026</span><span className="paper-rule" /></div>
@@ -383,7 +381,7 @@ function App() {
               <div className="hero-scribble" aria-hidden="true">{text.heroScribble.map((line) => <span key={line}>{line}</span>)}</div>
             </div>
           </div>
-          <div className="hero-ticker" aria-hidden="true"><span>{text.ticker}</span><span>{text.ticker}</span><span>{text.ticker}</span><span>{text.ticker}</span></div>
+          <div className="hero-ticker scroll-reveal" aria-hidden="true"><span>{text.ticker}</span><span>{text.ticker}</span><span>{text.ticker}</span><span>{text.ticker}</span></div>
         </section>
 
         <section className="section services-section scroll-reveal" id="services">
