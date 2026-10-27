@@ -276,6 +276,9 @@ const serviceItems = [
 
 function App() {
   const [language, setLanguage] = useState<Language>(detectLanguage)
+  const [isPageEntering, setIsPageEntering] = useState(true)
+  const [isLanguageChanging, setIsLanguageChanging] = useState(false)
+  const previousLanguage = useRef(language)
   const text = content[language]
   const contactChannel = preferredContact[language]
   const contactHref = {
@@ -308,6 +311,20 @@ function App() {
   }, [language, text])
 
   useEffect(() => {
+    const timeoutId = window.setTimeout(() => setIsPageEntering(false), 700)
+    return () => window.clearTimeout(timeoutId)
+  }, [])
+
+  useEffect(() => {
+    if (previousLanguage.current === language) return
+    previousLanguage.current = language
+    setIsPageEntering(false)
+    setIsLanguageChanging(true)
+    const timeoutId = window.setTimeout(() => setIsLanguageChanging(false), 420)
+    return () => window.clearTimeout(timeoutId)
+  }, [language])
+
+  useEffect(() => {
     const revealTargets = document.querySelectorAll<HTMLElement>('.scroll-reveal')
     const showAll = () => revealTargets.forEach((element) => element.classList.add('is-visible'))
 
@@ -333,7 +350,7 @@ function App() {
   }, [])
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell${isPageEntering ? ' page-entering' : ''}${isLanguageChanging ? ' language-changing' : ''}`}>
       <header className="site-header">
         <div className="header-inner">
           <a className="brand" href="#top" aria-label={text.homeLabel}>

@@ -104,7 +104,9 @@ a { color: inherit; }
 button, select { color: inherit; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 
-.app-shell { overflow: hidden; animation: page-enter .7s ease-out both; }
+.app-shell { overflow: hidden; }
+.app-shell.page-entering { animation: page-enter .7s ease-out both; }
+.app-shell.language-changing { animation: language-change .42s ease-out both; }
 .site-header { position: sticky; top: 0; z-index: 20; background: var(--header-bg); backdrop-filter: blur(18px); border-bottom: 1px solid var(--line); }
 .header-inner, .hero-inner, .section, .contact-inner, .footer-inner { width: min(1180px, calc(100% - 64px)); margin: 0 auto; }
 .header-inner { min-height: 74px; display: flex; align-items: center; justify-content: space-between; gap: 30px; }
@@ -138,6 +140,10 @@ button, select { color: inherit; }
 @keyframes page-enter {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
+}
+@keyframes language-change {
+  from { opacity: .68; filter: blur(1px); }
+  to { opacity: 1; filter: blur(0); }
 }
 @keyframes language-menu-enter {
   from { opacity: 0; transform: translateY(-6px) scale(.98); }
