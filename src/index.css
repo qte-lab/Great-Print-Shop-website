@@ -1018,3 +1018,112 @@ html:lang(lzh) .back-top {
   html:lang(lzh) .site-footer { width: auto; min-width: 0; padding: 40px 24px; }
   html:lang(lzh) .footer-inner { align-items: center; }
 }
+
+.language-contribution-sheet {
+  position: fixed;
+  z-index: 1100;
+  inset-inline-end: 20px;
+  bottom: 20px;
+  display: grid;
+  gap: 14px;
+  width: min(440px, calc(100vw - 40px));
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  color: var(--ink);
+  background: var(--paper-bright);
+  box-shadow: var(--shadow);
+  direction: ltr;
+  writing-mode: horizontal-tb;
+  text-align: left;
+  animation: contribution-sheet-enter .28s ease-out both;
+}
+
+.language-contribution-sheet p {
+  margin: 0;
+  padding-inline-end: 26px;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.55;
+}
+
+.language-contribution-close {
+  position: absolute;
+  top: 10px;
+  inset-inline-end: 10px;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: var(--muted);
+  background: transparent;
+  cursor: pointer;
+}
+
+.language-contribution-close:hover {
+  color: var(--ink);
+  background: var(--soft-paper);
+}
+
+.language-contribution-close:focus-visible,
+.language-contribution-link:focus-visible {
+  outline: 2px solid var(--forest-text);
+  outline-offset: 3px;
+}
+
+.language-contribution-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 15px;
+  border-radius: 999px;
+  color: var(--action-fg);
+  background: var(--action-bg);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+  text-decoration: none;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.language-contribution-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(24, 54, 51, .15);
+}
+
+.language-contribution-link svg {
+  flex: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .language-contribution-sheet {
+    background: var(--soft-paper);
+  }
+}
+
+@keyframes contribution-sheet-enter {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 600px) {
+  .language-contribution-sheet {
+    inset-inline-end: 12px;
+    bottom: 12px;
+    width: calc(100vw - 24px);
+    gap: 12px;
+    padding: 19px;
+  }
+
+  .language-contribution-sheet p {
+    font-size: 14px;
+  }
+
+  .language-contribution-link {
+    font-size: 12px;
+  }
+}

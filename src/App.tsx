@@ -14,6 +14,7 @@ import {
   Printer,
   Sparkles,
   Truck,
+  X,
 } from 'lucide-react'
 import './index.css'
 import {
@@ -278,6 +279,7 @@ function App() {
   const [language, setLanguage] = useState<Language>(detectLanguage)
   const [isPageEntering, setIsPageEntering] = useState(true)
   const [isLanguageChanging, setIsLanguageChanging] = useState(false)
+  const [isContributionSheetVisible, setIsContributionSheetVisible] = useState(true)
   const previousLanguage = useRef(language)
   const text = content[language]
   const rtl = isRightToLeft(language)
@@ -510,6 +512,29 @@ function App() {
       </main>
 
       <footer className="site-footer scroll-reveal"><div className="footer-inner"><div className="footer-brand"><span className="brand-mark"><Printer size={18} strokeWidth={2.2} /></span><span dir="ltr">Great Print Shop</span></div><p>{footerAttribution !== undefined && footerNotice !== undefined ? <><bdi dir="ltr">{rtl ? `· ${footerAttribution}` : `${footerAttribution} ·`}</bdi>{' '}<span>{footerNotice}</span></> : text.footer}</p><a href="#top" className="back-top">↑ <span>{text.backToTop}</span></a></div></footer>
+      {isContributionSheetVisible && createPortal(
+        <aside className="language-contribution-sheet" aria-label="Language contributions">
+          <button
+            className="language-contribution-close"
+            type="button"
+            aria-label="Dismiss language contribution message"
+            onClick={() => setIsContributionSheetVisible(false)}
+          >
+            <X size={18} aria-hidden="true" />
+          </button>
+          <p>Help us enhance existing languages or add new ones, and receive a coupon right away!</p>
+          <a
+            className="language-contribution-link"
+            href="https://github.com/qte-lab/Great-Print-Shop-website"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Visit the Repo &amp; Submit a Pull Request
+            <ExternalLink size={16} aria-hidden="true" />
+          </a>
+        </aside>,
+        document.body,
+      )}
     </div>
   )
 }
