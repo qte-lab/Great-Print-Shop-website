@@ -357,6 +357,61 @@ function App() {
     return () => observer.disconnect()
   }, [])
 
+  useEffect(() => {
+    if (language !== 'lzh') return
+    const scroller = document.querySelector<HTMLElement>('.app-shell')
+    if (!scroller) return
+
+    // Pin the strip to 卷首 (rightmost panel = hero) on entry. The RTL strip
+    // must start at scrollLeft 0 (right edge / header); without this, scroll
+    // anchoring or hash restoration can drop the user into the middle.
+    scroller.scrollLeft = 0
+
+    const scrollHorizontally = (event: WheelEvent) => {
+      if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return
+      const target = event.target
+      const section = target instanceof Element
+        ? target.closest<HTMLElement>('main > section')
+        : null
+      const canScrollSection = section
+        && section.scrollHeight > section.clientHeight
+        && ((event.deltaY < 0 && section.scrollTop > 0)
+          || (event.deltaY > 0 && section.scrollTop + section.clientHeight < section.scrollHeight))
+
+      if (canScrollSection) {
+        event.preventDefault()
+        section.scrollTop += event.deltaY
+        return
+      }
+
+      // Horizontal strip scroller (RTL div): wheel down advances leftward, i.e.
+      // scrollLeft decreases below 0.
+      event.preventDefault()
+      scroller.scrollLeft -= event.deltaY
+    }
+
+    // In lzh mode the page scrolls horizontally (RTL). The default anchor
+    // behaviour for href="#top" only resets scrollTop, which is already 0 —
+    // so intercept clicks on any #top link and reset scrollLeft to 0 (the
+    // rightmost panel = hero/卷首 in RTL).
+    const handleBackToTop = (event: MouseEvent) => {
+      const target = event.target
+      const anchor = target instanceof Element
+        ? target.closest<HTMLAnchorElement>('a[href="#top"]')
+        : null
+      if (!anchor) return
+      event.preventDefault()
+      scroller.scrollLeft = 0
+    }
+
+    window.addEventListener('wheel', scrollHorizontally, { passive: false })
+    document.addEventListener('click', handleBackToTop)
+    return () => {
+      window.removeEventListener('wheel', scrollHorizontally)
+      document.removeEventListener('click', handleBackToTop)
+    }
+  }, [language])
+
   return (
     <div className={`app-shell${isPageEntering ? ' page-entering' : ''}${isLanguageChanging ? ' language-changing' : ''}`}>
       <header className="site-header">

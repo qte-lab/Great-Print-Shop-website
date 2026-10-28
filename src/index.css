@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+HK:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&family=Noto+Sans+Lao:wght@400;500;600;700&family=Noto+Sans+Myanmar:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Sans+Tamil:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&family=Noto+Sans+Tibetan:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+HK:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&family=Noto+Sans+Lao:wght@400;500;600;700&family=Noto+Sans+Myanmar:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Sans+Tamil:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&family=Noto+Sans+Tibetan:wght@400;500;600;700&family=Noto+Serif+TC:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 :root {
   color-scheme: light dark;
@@ -79,6 +79,11 @@ html:lang(zh-Hant-HK) {
 
 html:lang(zh-Hant-TW) {
   --font-body: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+  --font-display: var(--font-body);
+}
+
+html:lang(lzh) {
+  --font-body: 'Noto Serif TC', 'Noto Sans TC', 'PMingLiU', serif;
   --font-display: var(--font-body);
 }
 
@@ -469,4 +474,547 @@ html:lang(my) :is(.section-heading h2, .pricing-heading h2, .area-copy h2) { lin
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
   .scroll-reveal { opacity: 1; transform: none; }
+}
+
+/* =====================================================================
+   lzh (Literary Chinese) — horizontal strip + vertical-rl typography
+   One consolidated block (replaces all previous lzh patches):
+   - html is the horizontal scroller (RTL: scrollLeft spans 0..-max)
+   - .app-shell lays out header | main | footer as an RTL flex row
+   - each main section is a 100vh panel of vertical-text columns
+   - panels scroll vertically only when content cannot fit (thin
+     visible scrollbar; wheel events are routed by App.tsx)
+   ===================================================================== */
+
+/* --- Shell: turn the page into a right-to-left horizontal strip -------
+   The horizontal scroll container is .app-shell (a regular div), NOT html.
+   Using html as the scroll root on mobile is unreliable: Chrome Mobile
+   ignores touch-action on the root element, overscroll-behavior:none
+   kills touch scrolling entirely, and the browser auto-scrolls to the
+   #top anchor (landing mid-page). A dedicated div avoids all of these
+   root-element quirks. */
+html:lang(lzh) {
+  direction: rtl;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+html:lang(lzh) body {
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+html:lang(lzh) #root {
+  height: 100vh;
+  height: 100dvh;
+}
+
+html:lang(lzh) .app-shell {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  /* Fixed to viewport width; content (header + main + footer) overflows
+     horizontally → this element becomes the scroll container. */
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  overflow-x: auto;
+  overflow-y: hidden;
+  /* pan-x: start horizontal gesture immediately on touch, block vertical. */
+  touch-action: pan-x;
+  overscroll-behavior: contain;
+  /* Stop the browser from shifting scroll to keep a focused element in view,
+     which can drop the user into the middle of the RTL strip on load. */
+  overflow-anchor: none;
+  direction: rtl;
+}
+
+/* Entry/change animations assume a vertical page flow; disable for lzh. */
+html:lang(lzh) .app-shell.page-entering,
+html:lang(lzh) .app-shell.language-changing {
+  animation: none;
+}
+
+/* In lzh horizontal-scroll mode the IntersectionObserver that toggles
+   .scroll-reveal.is-visible only fires for panels currently in the
+   viewport. Off-screen panels keep transform: translateY(22px), which
+   inflates the document scrollHeight by 22px and creates a phantom
+   vertical scroll gap on mobile. Neutralise the transform for lzh so
+   every panel renders at its final position immediately. */
+html:lang(lzh) .scroll-reveal { transform: none !important; }
+
+/* --- Header: slim full-height column pinned to the right edge --- */
+html:lang(lzh) .site-header {
+  position: relative;
+  flex: none;
+  width: 84px;
+  height: 100vh;
+  height: 100dvh;
+  border-left: 1px solid var(--line);
+  writing-mode: horizontal-tb;
+  direction: ltr;
+  /* The page scrolls horizontally (overflow-x: auto on html). Without this,
+     mobile browsers interpret touches on the header as pan-x scroll gestures
+     and swallow the click — so the language picker and nav links never fire.
+     manipulation allows tap + pinch-zoom but disables pan, restoring click. */
+  touch-action: manipulation;
+}
+
+html:lang(lzh) .header-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  min-height: 0;
+  height: 100vh;
+  height: 100dvh;
+  margin: 0;
+  padding: 20px 8px;
+  gap: 22px;
+}
+
+html:lang(lzh) .brand { flex-direction: column; gap: 6px; }
+html:lang(lzh) .brand-name { writing-mode: vertical-rl; font-size: 13px; }
+html:lang(lzh) .brand-dot { display: none; }
+
+html:lang(lzh) .desktop-nav {
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  margin: 0;
+}
+
+html:lang(lzh) .desktop-nav a { writing-mode: vertical-rl; font-size: 12px; }
+
+html:lang(lzh) .header-actions {
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+}
+
+html:lang(lzh) .language-picker { max-width: 100%; justify-content: center; }
+html:lang(lzh) .language-picker-trigger { flex-direction: column; justify-content: center; gap: 6px; padding: 8px 6px; }
+html:lang(lzh) .language-picker-label { max-width: 48px; font-size: 10px; }
+html:lang(lzh) .language-picker-chevron { display: none; }
+/* The portal dropdown always renders horizontally regardless of layout. */
+html:lang(lzh) .language-picker-menu { writing-mode: horizontal-tb; direction: ltr; }
+
+html:lang(lzh) .header-order { width: 44px; min-width: 44px; min-height: 44px; justify-content: center; padding: 10px; }
+html:lang(lzh) .header-order span { display: none; }
+
+/* --- Main: right-to-left row of full-height panels --- */
+html:lang(lzh) main {
+  display: flex;
+  flex-direction: row;
+  flex: none;
+  width: max-content;
+  height: 100vh;
+  height: 100dvh;
+  direction: rtl;
+  /* Route touch gestures on the strip to the .app-shell horizontal scroller.
+     Without pan-x the browser claims a vertical pan on the section below and
+     the horizontal scroll of the whole strip never fires on touch. */
+  touch-action: pan-x;
+}
+
+html:lang(lzh) main > section {
+  position: relative;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: clamp(360px, 56vw, 720px);
+  height: 100vh;
+  height: 100dvh;
+  max-height: 100vh;
+  max-height: 100dvh;
+  height: 100dvh;
+  margin: 0;
+  padding: 44px 34px;
+  overflow-x: hidden;
+  /* Panels are not touch-scroll containers: content is tuned to fit one
+     viewport, so we keep overflow hidden and let touch-action: pan-x route
+     every horizontal gesture up to the .app-shell strip scroller. A nested
+     overflow-y:auto container would claim the gesture and kill horizontal
+     scrolling on touch. */
+  overflow-y: hidden;
+  touch-action: pan-x;
+  scrollbar-width: thin;
+  scrollbar-color: var(--forest-text) transparent;
+  direction: ltr;
+  writing-mode: horizontal-tb;
+}
+
+html:lang(lzh) main > section::-webkit-scrollbar { width: 6px; }
+html:lang(lzh) main > section::-webkit-scrollbar-track { background: transparent; }
+html:lang(lzh) main > section::-webkit-scrollbar-thumb { border-radius: 6px; background: var(--forest-text); }
+
+/* --- Shared vertical typography -----------------------------------
+   All flowing text inside main becomes vertical-rl columns; inline
+   metadata (prices, links, addresses) is explicitly reset below.   */
+html:lang(lzh) main :is(h1, h2, h3, p, .eyebrow, .campus-note) {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  line-height: 1.9;
+  letter-spacing: .05em;
+  text-transform: none;
+}
+
+/* Mono/uppercase decorations fall back to the serif body font. */
+html:lang(lzh) :is(.eyebrow, .campus-note, .hero-stamp, .hero-scribble, .paper-kicker,
+  .paper-label, .price-label, .price-unit, .price-card-top, .price-aside-small,
+  .footer-inner p, .back-top) {
+  font-family: var(--font-body);
+  letter-spacing: .12em;
+  text-transform: none;
+}
+
+/* Height caps per role: columns wrap leftward instead of overflowing. */
+html:lang(lzh) main h1 { max-inline-size: 74vh; font-size: clamp(34px, 4vw, 52px); line-height: 1.45; letter-spacing: .08em; }
+html:lang(lzh) main h2 { max-inline-size: 48vh; font-size: clamp(28px, 3.2vw, 42px); line-height: 1.5; letter-spacing: .06em; }
+html:lang(lzh) main h3 { max-inline-size: 46vh; font-size: clamp(17px, 1.8vw, 24px); line-height: 1.6; }
+html:lang(lzh) main p { max-inline-size: 60vh; font-size: clamp(12px, 1.1vw, 14px); }
+html:lang(lzh) main .eyebrow { max-inline-size: 40vh; font-size: 11px; letter-spacing: .2em; }
+html:lang(lzh) main .campus-note { max-inline-size: 40vh; margin: 0; font-size: 10px; letter-spacing: .18em; }
+
+/* Horizontal exceptions: numerals, prices, contact rows, fine print. */
+html:lang(lzh) .price-value { writing-mode: horizontal-tb; text-orientation: mixed; }
+html:lang(lzh) .price-aside-small { writing-mode: horizontal-tb; text-orientation: mixed; }
+html:lang(lzh) .address-row span { writing-mode: horizontal-tb; text-orientation: mixed; }
+html:lang(lzh) .contact-link :is(small, strong) { writing-mode: horizontal-tb; text-orientation: mixed; }
+/* Long Latin contact values (email, phone) must not break mid-token. */
+html:lang(lzh) .contact-link strong { overflow-wrap: normal; word-break: keep-all; font-size: 13px; }
+
+/* --- Hero --- */
+html:lang(lzh) .hero-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(280px, .95fr);
+  gap: 44px;
+  align-items: center;
+  width: 100%;
+  min-height: 0;
+  margin: 0;
+  direction: rtl;
+}
+
+/* Reading order right-to-left: eyebrow, h1, body, actions, note.
+   wrap is essential: eyebrow+h1+body fill the first row, so hero-actions and
+   campus-note wrap to a second row instead of overflowing into the paper card. */
+html:lang(lzh) .hero-copy {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 20px;
+  max-width: 100%;
+  min-width: 0;
+  direction: rtl;
+}
+
+html:lang(lzh) .hero-copy > * { flex: none; }
+
+html:lang(lzh) .hero-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 8px;
+  direction: rtl;
+}
+
+html:lang(lzh) .hero-actions > :is(.button, .text-link) {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  padding: 13px 11px;
+  line-height: 1.7;
+}
+
+html:lang(lzh) .hero-actions svg { flex: none; }
+
+/* Art column keeps its horizontal composition; ticker is hidden. */
+html:lang(lzh) .hero-art { width: 100%; height: min(76vh, 600px); min-height: 0; direction: ltr; }
+html:lang(lzh) .hero-ticker { display: none; }
+
+html:lang(lzh) .paper-card {
+  width: min(275px, 92%);
+  height: min(66vh, 480px);
+  min-height: 0;
+  padding: 22px 20px 18px;
+  overflow: hidden;
+}
+
+html:lang(lzh) .paper-icon { margin: 30px auto 20px; }
+html:lang(lzh) .paper-price strong { font-size: clamp(72px, 8vw, 96px); }
+html:lang(lzh) .paper-card .paper-label { margin: auto; }
+html:lang(lzh) .paper-label span { margin-block-start: 6px; }
+/* The stamp and scribble are horizontal-mode decorations positioned absolutely
+   over the paper card. In vertical-rl mode they overlap the card content
+   (topline/icon/footer), so hide them rather than re-positioning. */
+html:lang(lzh) .hero-stamp,
+html:lang(lzh) .hero-scribble { display: none; }
+
+/* --- Services --- */
+html:lang(lzh) .split-heading {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 40px;
+  align-items: start;
+  margin-bottom: 34px;
+  direction: rtl;
+}
+
+html:lang(lzh) .section-heading > div {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 16px;
+  direction: rtl;
+}
+
+html:lang(lzh) .service-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  direction: rtl;
+}
+
+/* Card reads right-to-left: number, icon, title, body. */
+html:lang(lzh) .service-card {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 14px;
+  min-height: 0;
+  padding: 18px 16px;
+}
+
+html:lang(lzh) .service-card .service-icon { margin-top: 0; width: 42px; height: 42px; }
+html:lang(lzh) .service-card .service-icon svg { width: 20px; height: 20px; }
+
+/* --- Pricing --- */
+html:lang(lzh) .pricing-heading {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 16px;
+  max-width: none;
+  margin-bottom: 26px;
+  direction: rtl;
+}
+
+html:lang(lzh) .pricing-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(210px, .8fr);
+  gap: 14px;
+  align-items: stretch;
+}
+
+html:lang(lzh) .pricing-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  direction: rtl;
+  /* Let each card take its own content height instead of stretching to match
+     the tallest sibling — eliminates the ~198px empty bottom band. */
+  align-items: start;
+}
+
+html:lang(lzh) .price-card { min-height: 0; padding: 20px 18px; }
+html:lang(lzh) .price-name { margin-top: 18px; font-size: clamp(15px, 1.5vw, 19px); line-height: 1.7; max-inline-size: 40vh; }
+html:lang(lzh) .price-value { margin-top: 10px; }
+html:lang(lzh) .price-value strong { font-size: clamp(64px, 6.5vw, 88px); letter-spacing: -.08em; }
+html:lang(lzh) .price-unit { margin-top: 12px; max-inline-size: 34vh; font-size: 11px; }
+
+html:lang(lzh) .price-aside { min-height: 0; padding: 18px 16px; }
+html:lang(lzh) .price-aside-mark { margin-bottom: 14px; }
+html:lang(lzh) .price-aside p { max-inline-size: 40vh; margin-bottom: 12px; font-size: clamp(15px, 1.5vw, 19px); line-height: 1.6; }
+
+/* --- Contact --- */
+html:lang(lzh) .contact-inner {
+  display: grid;
+  grid-template-columns: auto minmax(240px, 1fr);
+  gap: 44px;
+  align-items: center;
+  width: 100%;
+  padding-top: 0;
+  padding-bottom: 0;
+  direction: rtl;
+}
+
+html:lang(lzh) .contact-copy {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 16px;
+  direction: rtl;
+}
+
+html:lang(lzh) .contact-copy > * { flex: none; }
+html:lang(lzh) .contact-copy .button { writing-mode: vertical-rl; text-orientation: mixed; padding: 15px 12px; line-height: 1.7; }
+html:lang(lzh) .contact-links { min-width: 0; }
+
+/* --- Area --- */
+html:lang(lzh) .area-card {
+  display: grid;
+  grid-template-columns: minmax(170px, .85fr) minmax(0, 1.15fr);
+  gap: 34px;
+  align-items: center;
+  width: 100%;
+  min-height: 0;
+  padding: 30px;
+}
+
+html:lang(lzh) .area-illustration { min-height: min(56vh, 420px); }
+
+/* Text columns first (right), address rows wrap below (horizontal). */
+html:lang(lzh) .area-copy {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  align-content: flex-start;
+  gap: 18px 16px;
+  direction: rtl;
+}
+
+html:lang(lzh) .area-copy .address-row {
+  writing-mode: horizontal-tb;
+  direction: ltr;
+  max-width: 190px;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+/* --- Footer: narrow panel at the far left of the strip --- */
+html:lang(lzh) .site-footer {
+  flex: none;
+  display: flex;
+  align-items: center;
+  width: clamp(300px, 42vw, 540px);
+  height: 100vh;
+  height: 100dvh;
+  padding: 44px 34px;
+  direction: ltr;
+  writing-mode: horizontal-tb;
+  /* pan-x lets a swipe on the footer scroll the strip horizontally; a tap still
+     fires click (back-to-top). manipulation would block the horizontal pan. */
+  touch-action: pan-x;
+}
+
+/* Footer: three vertical columns (brand, copyright, back-to-top) laid out
+   right-to-left, matching the rest of the lzh page direction. */
+html:lang(lzh) .footer-inner {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 24px;
+  width: 100%;
+  min-height: 0;
+  margin: 0;
+  direction: rtl;
+}
+
+html:lang(lzh) .footer-brand {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+html:lang(lzh) .footer-brand .brand-name { writing-mode: vertical-rl; text-orientation: mixed; font-size: 13px; }
+
+html:lang(lzh) .footer-inner p {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  max-inline-size: 44vh;
+  margin: 0;
+}
+html:lang(lzh) .back-top {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  justify-self: start;
+}
+
+/* --- Responsive: tighten the strip on narrow viewports --- */
+@media (max-width: 900px) {
+  html:lang(lzh) main > section { width: clamp(340px, 72vw, 640px); padding: 40px 24px; }
+  html:lang(lzh) .hero-inner { grid-template-columns: minmax(0, 1fr) minmax(220px, .8fr); gap: 28px; }
+  html:lang(lzh) .hero-copy { gap: 14px; }
+  html:lang(lzh) .service-card { gap: 10px; padding: 14px 12px; }
+  html:lang(lzh) .contact-inner { gap: 28px; }
+  html:lang(lzh) .area-card { grid-template-columns: minmax(150px, .8fr) minmax(0, 1.2fr); gap: 22px; padding: 22px; }
+}
+
+@media (max-width: 600px) {
+  html:lang(lzh) .site-header { width: 64px; }
+  html:lang(lzh) .header-inner { padding: 14px 6px; gap: 16px; }
+  html:lang(lzh) .header-order { width: 40px; min-width: 40px; min-height: 40px; padding: 8px; }
+  /* Keep the vertical nav visible on mobile — the header is a narrow vertical
+     column so the 3 links (服務/價目/通問) stack vertically without overflow. */
+  html:lang(lzh) .desktop-nav { display: flex; }
+
+  /* Widen each panel so content spreads horizontally (user scrolls
+     left/right between panels). Height must stay within the viewport —
+     padding is tightened so content fits even at 550px (iPhone SE with
+     address bar visible). */
+  html:lang(lzh) main > section { width: 120vw; min-width: 360px; padding: 24px 16px; }
+  html:lang(lzh) .hero-inner { grid-template-columns: minmax(0, 1fr) minmax(160px, .8fr); gap: 20px; }
+  html:lang(lzh) .hero-copy { gap: 10px; }
+  html:lang(lzh) .hero-copy h1 { font-size: clamp(24px, 6.5vw, 34px); max-inline-size: 40vh; }
+  html:lang(lzh) .hero-copy .hero-body { max-inline-size: 34vh; }
+  html:lang(lzh) .hero-actions > :is(.button, .text-link) { padding: 10px 8px; font-size: 11px; }
+  html:lang(lzh) .hero-art { height: 48vh; }
+
+  html:lang(lzh) .paper-card { width: min(240px, 96%); height: min(52vh, 420px); padding: 14px 12px; }
+  html:lang(lzh) .paper-icon { width: 44px; height: 44px; margin: 16px auto 12px; }
+  html:lang(lzh) .paper-icon svg { width: 22px; height: 22px; }
+  html:lang(lzh) .paper-price strong { font-size: 56px; }
+  html:lang(lzh) .hero-stamp { top: 6px; transform: scale(.78) rotate(13deg); }
+  html:lang(lzh) .hero-scribble { font-size: 9px; }
+
+  html:lang(lzh) .split-heading { gap: 14px; margin-bottom: 14px; }
+  /* Tighter column-height caps so vertical text wraps leftward earlier,
+     keeping every element inside one viewport. */
+  html:lang(lzh) main h2 { font-size: clamp(22px, 6vw, 30px); max-inline-size: 26vh; }
+  html:lang(lzh) main p { max-inline-size: 26vh; }
+  /* Three cards in a row (panel is wide enough now); row layout per card
+     so height = max(title, body), not the sum. */
+  html:lang(lzh) .service-list { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  /* Card: 2x2 grid (number+icon top row, title+body bottom row). Grid gives
+     each cell its own space so content never overflows the card border, unlike
+     flex row nowrap which squeezed 4 elements past the 133px card width. */
+  html:lang(lzh) .service-card {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows: auto auto;
+    gap: 6px 8px;
+    align-items: start;
+    justify-items: start;
+    padding: 12px 10px;
+  }
+  html:lang(lzh) .service-card .service-number { grid-column: 1; grid-row: 1; font-size: 11px; }
+  html:lang(lzh) .service-card .service-icon { grid-column: 2; grid-row: 1; width: 28px; height: 28px; }
+  html:lang(lzh) .service-card .service-icon svg { width: 16px; height: 16px; }
+  html:lang(lzh) .service-card h3 { grid-column: 1; grid-row: 2; max-inline-size: 26vh; }
+  html:lang(lzh) .service-card p { grid-column: 2; grid-row: 2; max-inline-size: 26vh; }
+
+  /* Restore multi-column layouts — the panel is wide enough now. */
+  html:lang(lzh) .pricing-layout { grid-template-columns: minmax(0, 1.6fr) minmax(180px, .8fr); }
+  html:lang(lzh) .pricing-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+  /* Tighten price-aside on mobile so pricing panel fits 550px viewport. */
+  html:lang(lzh) .price-aside { padding: 12px 14px; }
+  html:lang(lzh) .price-aside-mark { margin-bottom: 10px; width: 36px; height: 36px; font-size: 18px; }
+  html:lang(lzh) .price-aside p { margin-bottom: 8px; }
+  html:lang(lzh) .pricing-heading { margin-bottom: 8px; }
+  /* Contact: stack copy above links on mobile so the copy row (eyebrow + h2 +
+     body + button, ~293px wide) is not squeezed into a narrow grid column and
+     the button no longer overflows onto the links list. */
+  html:lang(lzh) .contact-inner { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  html:lang(lzh) .contact-links { margin-top: 0; }
+  /* Area: stack illustration above copy (single column) so copy gets the
+     full panel width — horizontal address rows then sit beside the vertical
+     text columns instead of wrapping to their own tall lines. */
+  html:lang(lzh) .area-card { grid-template-columns: minmax(0, 1fr); gap: 14px; padding: 18px; }
+  html:lang(lzh) .area-illustration { min-height: min(34vh, 220px); }
+  html:lang(lzh) .site-footer { width: auto; min-width: 0; padding: 40px 24px; }
+  html:lang(lzh) .footer-inner { align-items: center; }
 }
